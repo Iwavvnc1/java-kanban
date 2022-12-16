@@ -1,12 +1,10 @@
-
-
 public class Task extends FatherTask {
 
     private String description;
 
-    public Task(int id, String title, Status status, String description) {
-        super(id, title, status);
+    public Task(String title, String description) {
+
+        super(title);
         this.description = description;
-        status = Status.NEW;
     }
 }
