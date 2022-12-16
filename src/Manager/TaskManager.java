@@ -1,9 +1,16 @@
+package Manager;
+
+import DataTask.Epic;
+import DataTask.Status;
+import DataTask.SubTask;
+import DataTask.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TaskManager {
 
-    private int id = 1;
+    private int id = 0;
     int epicId;
     Object searchTask;
     ArrayList<Integer> allTaskId = new ArrayList<>();
@@ -12,16 +19,19 @@ public class TaskManager {
     HashMap<Integer, Object> subTasks = new HashMap<>();
     HashMap<Integer, Object> epicTasks = new HashMap<>();
 
+    public int getId() {
+    id++;
+    return id;
+    }
+
     public int addTask(Task task) { // Блок методов добавления и сохранения задач
 
-        task.setId(id++);
         tasks.put(task.getId(), task);
         return task.getId();
     }
 
     public int addSubTask(SubTask subTask) {
 
-        subTask.setId(id++);
         subTasks.put(subTask.getId(), subTask);
 
         for (int idEpicTask : epicTasks.keySet()) {
@@ -35,7 +45,7 @@ public class TaskManager {
     }
 
     public int addEpicTask(Epic epic) {
-        epic.setId(id++);
+
         epicId = id;
         epicTasks.put(epic.getId(), epic);
         return epic.getId();

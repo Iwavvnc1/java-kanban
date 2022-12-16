@@ -1,12 +1,17 @@
-public class FatherTask {
+package DataTask;
+
+public class Task {
+
     private int id;
     private String title;
+    private String description;
     Status status;
 
-    public FatherTask(String title) {
-
+    public Task(int id, String title, String description,Status status) {
+        this.id = id;
         this.title = title;
-        status = Status.NEW;
+        this.description = description;
+        this.status = Status.NEW;
     }
 
     public int getId() {
@@ -19,14 +24,8 @@ public class FatherTask {
         return status;
     }
 
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
     public void setStatus(Status status) {
 
         this.status = status;
     }
 }
-

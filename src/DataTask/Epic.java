@@ -1,16 +1,19 @@
+package DataTask;
+
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-public class Epic extends FatherTask {
+public class Epic extends Task {
 
-    private ArrayList<Integer> idSubTasks = new ArrayList<>();
+    private List<Integer> idSubTasks = new ArrayList<>(); /*List<SubTask> мы это еще не изучали, и на QA сказали тут id
+    хранить а не задачи*/
 
-    public Epic(String title) {
-
-        super(title);
+    public Epic(int id, String title, String description) {
+        super(id, title, description,Status.NEW);
     }
 
-    public ArrayList<Integer> getIdSubTasks() {
+    public List<Integer> getIdSubTasks() {
 
         return idSubTasks;
     }
