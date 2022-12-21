@@ -8,7 +8,7 @@ import DataTask.Task;
 public class Test {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = Managers.getDefault();
         Task task = new Task(taskManager.getId(),"Переезд", "привезти",Status.NEW);
         taskManager.addTask(task);
         Epic epic = new Epic(taskManager.getId(), "Разгрузка","описание");
@@ -24,7 +24,12 @@ public class Test {
         SubTask subTask2 = new SubTask(taskManager.getId(), "улучшение придомовой территории",
                 "убрать весь мусор",epic1.getId());
         taskManager.addSubTask(subTask2);
-
+        taskManager.getEpicTask(epic.getId());
+        taskManager.getSubTask(subTask.getId());
+        taskManager.getTask(task.getId());
+        for (Task task1 : Managers.getDefaultHistory().getHistory()) {
+            System.out.println(task1);
+        }
         taskManager.getAllTask();
         System.out.println(epic.getIdSubTasks());
         System.out.println(epic1.getIdSubTasks());
@@ -47,7 +52,4 @@ public class Test {
         System.out.println(taskManager.epicTasks.size());
 
     }
-} /* Создайте 2 задачи, один эпик с 2 подзадачами, а другой эпик с 1 подзадачей.
-Распечатайте списки эпиков, задач и подзадач, через System.out.println(..)
-Измените статусы созданных объектов, распечатайте. Проверьте, что статус задачи и подзадачи сохранился, а статус эпика рассчитался по статусам подзадач.
-И, наконец, попробуйте удалить одну из задач и один из эпиков. */
+}
