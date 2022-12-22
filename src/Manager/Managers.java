@@ -1,7 +1,7 @@
 package Manager;
 
 public class Managers {
-    public TaskManager getDefault() {
+    public static TaskManager getDefault() { //меня зовут Иван, Игорь это случайное имя в аккаунте
 
         return new InMemoryTaskManager();
     }

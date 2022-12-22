@@ -1,7 +1,7 @@
 package DataTask;
 
 public class SubTask extends Task {
-   private int epicId;
+   private final int epicId;
 
     public int getEpicId() {
 

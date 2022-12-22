@@ -2,7 +2,7 @@ package DataTask;
 
 public class Task {
 
-    private int id;
+    private final int id;
     private String title;
     private String description;
     Status status;
