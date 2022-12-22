@@ -8,8 +8,9 @@ import DataTask.Task;
 public class Test {
 
     public static void main(String[] args) {
-        TaskManager taskManager = Managers.getDefault();
-        Task task = new Task(taskManager.getId(),"Переезд", "привезти",Status.NEW);
+        Managers managers = new Managers();
+        InMemoryTaskManager taskManager = (InMemoryTaskManager) managers.getDefault();
+        Task task = new Task(taskManager.getId(),"Переезд", "привезти");
         taskManager.addTask(task);
         Epic epic = new Epic(taskManager.getId(), "Разгрузка","описание");
         taskManager.addEpicTask(epic);
@@ -33,6 +34,8 @@ public class Test {
         taskManager.getAllTask();
         System.out.println(epic.getIdSubTasks());
         System.out.println(epic1.getIdSubTasks());
+        System.out.println(subTask1.getStatus());
+        System.out.println(subTask.getStatus());
         System.out.println(epic.getStatus());
         subTask.setStatus(Status.IN_PROGRESS);
         subTask1.setStatus(Status.DONE);

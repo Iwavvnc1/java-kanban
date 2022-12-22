@@ -7,11 +7,11 @@ public class Task {
     private String description;
     Status status;
 
-    public Task(int id, String title, String description,Status status) {
+    public Task(int id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.status = Status.NEW;
+        status = Status.NEW;
     }
 
     public int getId() {

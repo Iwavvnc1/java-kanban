@@ -10,7 +10,7 @@ public class Epic extends Task {
     хранить а не задачи*/
 
     public Epic(int id, String title, String description) {
-        super(id, title, description,Status.NEW);
+        super(id, title, description);
     }
 
     public List<Integer> getIdSubTasks() {

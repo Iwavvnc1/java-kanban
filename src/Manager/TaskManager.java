@@ -6,7 +6,6 @@ import DataTask.Task;
 
 public interface TaskManager {
 
-
     int addTask(Task task);
     int addSubTask(SubTask subTask);
     int addEpicTask(Epic epic);
