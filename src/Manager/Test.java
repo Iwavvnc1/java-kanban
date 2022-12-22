@@ -8,7 +8,7 @@ import DataTask.Task;
 public class Test {
 
     public static void main(String[] args) {
-        InMemoryTaskManager taskManager = Managers.getDefault();
+        TaskManager taskManager = Managers.getDefault();
         Task task = new Task(taskManager.getId(),"Переезд", "привезти",Status.NEW);
         taskManager.addTask(task);
         Epic epic = new Epic(taskManager.getId(), "Разгрузка","описание");

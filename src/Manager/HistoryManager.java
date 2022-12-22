@@ -2,12 +2,12 @@ package Manager;
 
 import DataTask.Task;
 
-import java.util.LinkedList;
+import java.util.List;
 
 
 public interface HistoryManager {
 
     public void updateHistory(Task task);
 
-    public LinkedList<Task> getHistory();
+    public List<Task> getHistory();
 }
