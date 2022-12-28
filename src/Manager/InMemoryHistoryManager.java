@@ -2,19 +2,20 @@ package Manager;
 
 import DataTask.Task;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    static List<Task> historyTracker = new ArrayList<>();
+    int limitTheHistory = 9;
+    List<Task> historyTracker = new LinkedList<>();
 
     @Override
     public void updateHistory(Task task) {
 
-        if (historyTracker.size() > 9) {
-            historyTracker.remove(9);
+        if (historyTracker.size() > limitTheHistory) {
+            historyTracker.remove(0);
         }
-        historyTracker.add(0, task);
+        historyTracker.add(task);
     }
 
     @Override

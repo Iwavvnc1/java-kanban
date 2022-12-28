@@ -6,6 +6,8 @@ import DataTask.Task;
 
 public interface TaskManager {
 
+    int giveId();
+
     int addTask(Task task);
 
     int addSubTask(SubTask subTask);
@@ -22,11 +24,11 @@ public interface TaskManager {
 
     void deleteTask(int id);
 
-    Object getTask(int id);
+    Task getTask(int id);
 
-    Object getSubTask(int id);
+    Task getSubTask(int id);
 
-    Object getEpicTask(int id);
+    Task getEpicTask(int id);
 
     void getAllTask();
 

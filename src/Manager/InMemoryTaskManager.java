@@ -10,16 +10,16 @@ import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private int id = 0;
+    static private int id = 0;
     int epicId;
-    Object searchTask;
+    Task searchTask;
     ArrayList<Integer> allTaskId = new ArrayList<>();
     ArrayList<Integer> allSubTaskIdInEpic = new ArrayList<>();
     HashMap<Integer, Object> tasks = new HashMap<>();
     HashMap<Integer, Object> subTasks = new HashMap<>();
     HashMap<Integer, Object> epicTasks = new HashMap<>();
 
-    public int getId() {
+    public int giveId() {
         id++;
         return id;
     }
@@ -146,44 +146,44 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Object getTask(int id) { // метод получения задачи по id
+    public Task getTask(int id) { // метод получения задачи по id
 
         searchTask = null;
         for (int idTask : tasks.keySet()) {
             if (id == idTask) {
-                searchTask = tasks.get(idTask);
+                searchTask = (Task) tasks.get(idTask);
                 break;
             }
         }
-        Managers.getDefaultHistory().updateHistory((Task) searchTask);
+        Managers.getDefaultHistory().updateHistory(searchTask);
         return searchTask;
     }
 
     @Override
-    public Object getSubTask(int id) {
+    public Task getSubTask(int id) {
 
         searchTask = null;
         for (int idSubTask : subTasks.keySet()) {
             if (id == idSubTask) {
-                searchTask = subTasks.get(idSubTask);
+                searchTask = (Task) subTasks.get(idSubTask);
                 break;
             }
         }
-        Managers.getDefaultHistory().updateHistory((Task) searchTask);
+        Managers.getDefaultHistory().updateHistory(searchTask);
         return searchTask;
     }
 
     @Override
-    public Object getEpicTask(int id) {
+    public Task getEpicTask(int id) {
 
         searchTask = null;
         for (int idEpicTask : epicTasks.keySet()) {
             if (id == idEpicTask) {
-                searchTask = epicTasks.get(idEpicTask);
+                searchTask =(Task) epicTasks.get(idEpicTask);
                 break;
             }
         }
-        Managers.getDefaultHistory().updateHistory((Task) searchTask);
+        Managers.getDefaultHistory().updateHistory(searchTask);
         return searchTask;
     }
 

@@ -10,19 +10,19 @@ public class Test {
     public static void main(String[] args) {
         Managers managers = new Managers();
         InMemoryTaskManager taskManager = (InMemoryTaskManager) managers.getDefault();
-        Task task = new Task(taskManager.getId(),"Переезд", "привезти");
+        Task task = new Task(taskManager.giveId(),"Переезд", "привезти");
         taskManager.addTask(task);
-        Epic epic = new Epic(taskManager.getId(), "Разгрузка","описание");
+        Epic epic = new Epic(taskManager.giveId(), "Разгрузка","описание");
         taskManager.addEpicTask(epic);
-        SubTask subTask = new SubTask(taskManager.getId(), "Выгрузить",
+        SubTask subTask = new SubTask(taskManager.giveId(), "Выгрузить",
                 "принять вещи в транспортной компании", epic.getId());
         taskManager.addSubTask(subTask);
-        SubTask subTask1 = new SubTask(taskManager.getId(), "Привезти",
+        SubTask subTask1 = new SubTask(taskManager.giveId(), "Привезти",
                 "Привезти вези из тк", epic.getId());
         taskManager.addSubTask(subTask1);
-        Epic epic1 = new Epic(taskManager.getId(), "Обустройство", "object");
+        Epic epic1 = new Epic(taskManager.giveId(), "Обустройство", "object");
         taskManager.addEpicTask(epic1);
-        SubTask subTask2 = new SubTask(taskManager.getId(), "улучшение придомовой территории",
+        SubTask subTask2 = new SubTask(taskManager.giveId(), "улучшение придомовой территории",
                 "убрать весь мусор",epic1.getId());
         taskManager.addSubTask(subTask2);
         taskManager.getEpicTask(epic.getId());
