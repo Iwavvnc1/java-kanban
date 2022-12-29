@@ -12,7 +12,7 @@ public class Test {
 
     public static void main(String[] args) {
         Managers managers = new Managers();
-        InMemoryTaskManager taskManager = (InMemoryTaskManager) managers.getDefault();
+        TaskManager taskManager = managers.getDefault();
         Task task = new Task(taskManager.giveId(),"Переезд", "привезти");
         taskManager.addTask(task);
         Epic epic = new Epic(taskManager.giveId(), "Разгрузка","описание");
@@ -46,17 +46,18 @@ public class Test {
         taskManager.updateSubTask(subTask);
         System.out.println(subTask1.getStatus());
         System.out.println(epic.getStatus());
-        System.out.println(taskManager.allTaskId);
+        System.out.println(taskManager.getAllTaskId());
         taskManager.getAllSubTaskInEpic();
-        System.out.println(taskManager.allSubTaskIdInEpic);
-        System.out.println(taskManager.subTasks.size());
+        taskManager.getTasks();
+        System.out.println(taskManager.getAllSubTaskInEpic());
+        System.out.println(taskManager.getSubTasks().size());
         taskManager.deleteTask(subTask.getId());
-        // taskManager.deleteAll();
+        //taskManager.deleteAll();
         taskManager.deleteTask(subTask2.getId());
-        System.out.println(taskManager.subTasks.size());
-        System.out.println(taskManager.epicTasks.size());
+        System.out.println(taskManager.getSubTasks().size());
+        System.out.println(taskManager.getEpicTasks().size());
         taskManager.deleteTask(epic.getId());
-        System.out.println(taskManager.epicTasks.size());
+        System.out.println(taskManager.getEpicTasks().size());
 
     }
 }

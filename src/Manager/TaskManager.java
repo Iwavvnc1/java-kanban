@@ -4,6 +4,8 @@ import DataTask.Epic;
 import DataTask.SubTask;
 import DataTask.Task;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
@@ -34,7 +36,15 @@ public interface TaskManager {
 
     Task getEpicTask(int id);
 
-    void getAllTask();
+    ArrayList<Integer> getAllTask();
 
-    void getAllSubTaskInEpic();
+    ArrayList<Integer> getAllSubTaskInEpic();
+
+    ArrayList<Integer> getAllTaskId();
+
+    HashMap<Integer, Object> getTasks();
+
+    HashMap<Integer, Object> getSubTasks();
+
+    HashMap<Integer, Object> getEpicTasks();
 }

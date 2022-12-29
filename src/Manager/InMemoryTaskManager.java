@@ -14,11 +14,11 @@ public class InMemoryTaskManager implements TaskManager {
     static private int id = 0;
     int epicId;
     Task searchTask;
-    ArrayList<Integer> allTaskId = new ArrayList<>();
-    ArrayList<Integer> allSubTaskIdInEpic = new ArrayList<>();
-    HashMap<Integer, Object> tasks = new HashMap<>();
-    HashMap<Integer, Object> subTasks = new HashMap<>();
-    HashMap<Integer, Object> epicTasks = new HashMap<>();
+    private ArrayList<Integer> allTaskId = new ArrayList<>();
+    private ArrayList<Integer> allSubTaskIdInEpic = new ArrayList<>();
+    private HashMap<Integer, Object> tasks = new HashMap<>();
+    private HashMap<Integer, Object> subTasks = new HashMap<>();
+    private HashMap<Integer, Object> epicTasks = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     public int giveId() {
@@ -181,7 +181,7 @@ public class InMemoryTaskManager implements TaskManager {
         searchTask = null;
         for (int idEpicTask : epicTasks.keySet()) {
             if (id == idEpicTask) {
-                searchTask =(Task) epicTasks.get(idEpicTask);
+                searchTask = (Task) epicTasks.get(idEpicTask);
                 break;
             }
         }
@@ -196,7 +196,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void getAllTask() { // метод получения списка всех задач
+    public ArrayList<Integer> getAllTask() { // метод получения списка всех задач
         for (int idTask : tasks.keySet()) {
             allTaskId.add(idTask);
         }
@@ -206,10 +206,11 @@ public class InMemoryTaskManager implements TaskManager {
         for (int idEpicTask : epicTasks.keySet()) {
             allTaskId.add(idEpicTask);
         }
+        return allTaskId;
     }
 
     @Override
-    public void getAllSubTaskInEpic() {
+    public ArrayList<Integer> getAllSubTaskInEpic() {
 
         for (int idEpicTask : epicTasks.keySet()) {
             Epic epicTask = (Epic) epicTasks.get(idEpicTask);
@@ -221,6 +222,22 @@ public class InMemoryTaskManager implements TaskManager {
                 }
             }
         }
+        return allSubTaskIdInEpic;
     }
 
+    public ArrayList<Integer> getAllTaskId() {
+        return allTaskId;
+    }
+
+    public HashMap<Integer, Object> getTasks() {
+        return tasks;
+    }
+
+    public HashMap<Integer, Object> getSubTasks() {
+        return subTasks;
+    }
+
+    public HashMap<Integer, Object> getEpicTasks() {
+        return epicTasks;
+    }
 }
