@@ -4,7 +4,11 @@ import DataTask.Epic;
 import DataTask.SubTask;
 import DataTask.Task;
 
+import java.util.List;
+
 public interface TaskManager {
+
+    List<Task> getHistory();
 
     int giveId();
 

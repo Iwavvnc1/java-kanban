@@ -7,6 +7,7 @@ import DataTask.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -18,6 +19,7 @@ public class InMemoryTaskManager implements TaskManager {
     HashMap<Integer, Object> tasks = new HashMap<>();
     HashMap<Integer, Object> subTasks = new HashMap<>();
     HashMap<Integer, Object> epicTasks = new HashMap<>();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     public int giveId() {
         id++;
@@ -155,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             }
         }
-        Managers.getDefaultHistory().updateHistory(searchTask);
+        historyManager.updateHistory(searchTask);
         return searchTask;
     }
 
@@ -169,7 +171,7 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             }
         }
-        Managers.getDefaultHistory().updateHistory(searchTask);
+        historyManager.updateHistory(searchTask);
         return searchTask;
     }
 
@@ -183,8 +185,14 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             }
         }
-        Managers.getDefaultHistory().updateHistory(searchTask);
+        historyManager.updateHistory(searchTask);
         return searchTask;
+    }
+
+    @Override
+    public List<Task> getHistory() {
+
+        return historyManager.getHistory();
     }
 
     @Override

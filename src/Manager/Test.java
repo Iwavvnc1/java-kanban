@@ -5,6 +5,9 @@ import DataTask.Status;
 import DataTask.SubTask;
 import DataTask.Task;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Test {
 
     public static void main(String[] args) {
@@ -28,8 +31,9 @@ public class Test {
         taskManager.getEpicTask(epic.getId());
         taskManager.getSubTask(subTask.getId());
         taskManager.getTask(task.getId());
-        for (Task task1 : Managers.getDefaultHistory().getHistory()) {
+        for (Task task1 : taskManager.getHistory()) {
             System.out.println(task1);
+            System.out.println(task1.getId());
         }
         taskManager.getAllTask();
         System.out.println(epic.getIdSubTasks());
