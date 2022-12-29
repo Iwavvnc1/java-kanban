@@ -10,7 +10,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     List<Task> historyTracker = new LinkedList<>();
 
     @Override
-    public void updateHistory(Task task) {
+    public void add(Task task) {
 
         if (historyTracker.size() > limitTheHistory) {
             historyTracker.remove(0);

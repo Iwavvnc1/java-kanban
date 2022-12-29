@@ -157,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             }
         }
-        historyManager.updateHistory(searchTask);
+        historyManager.add(searchTask);
         return searchTask;
     }
 
@@ -171,7 +171,7 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             }
         }
-        historyManager.updateHistory(searchTask);
+        historyManager.add(searchTask);
         return searchTask;
     }
 
@@ -185,7 +185,7 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             }
         }
-        historyManager.updateHistory(searchTask);
+        historyManager.add(searchTask);
         return searchTask;
     }
 
