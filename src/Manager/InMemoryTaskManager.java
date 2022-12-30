@@ -212,6 +212,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Integer> getAllSubTaskInEpic() {
 
+        allSubTaskIdInEpic.clear();
         for (int idEpicTask : epicTasks.keySet()) {
             Epic epicTask = (Epic) epicTasks.get(idEpicTask);
             for (int idSub : epicTask.getIdSubTasks()) {
