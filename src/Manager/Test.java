@@ -31,12 +31,15 @@ public class Test {
         taskManager.getEpicTask(epic.getId());
         taskManager.getSubTask(subTask.getId());
         taskManager.getTask(task.getId());
-        for (Task task1 : taskManager.getHistory()) {
+        System.out.println(taskManager.getAllSubTaskInEpic(epic));
+        epic.removeTasksOnEpic(3);
+        System.out.println(taskManager.getAllSubTaskInEpic(epic));
+        /*for (Task task1 : taskManager.getHistory()) {
             System.out.println(task1);
             System.out.println(task1.getId());
         }
         taskManager.getAllTask();
-        System.out.println(epic.getIdSubTasks());
+*/       /* System.out.println(epic.getIdSubTasks());
         System.out.println(epic1.getIdSubTasks());
         System.out.println(subTask1.getStatus());
         System.out.println(subTask.getStatus());
@@ -58,6 +61,6 @@ public class Test {
         System.out.println(taskManager.getEpicTasks().size());
         taskManager.deleteTask(epic.getId());
         System.out.println(taskManager.getEpicTasks().size());
-
+*/
     }
 }
