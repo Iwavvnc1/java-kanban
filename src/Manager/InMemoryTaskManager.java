@@ -117,32 +117,31 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (int idTask : tasks.keySet()) {
             if (id == idTask) {
+                historyManager.remove(id);
                 tasks.remove(idTask);
-                break;
+                return;
             }
         }
         for (int idSubTask : subTasks.keySet()) {
             if (id == idSubTask) {
                 SubTask subTask = (SubTask) subTasks.get(idSubTask);
                 Epic epicTask = (Epic) epicTasks.get(subTask.getEpicId());
+                historyManager.remove(id);
                 epicTask.removeTasksOnEpic(idSubTask);
                 subTasks.remove(idSubTask);
-                break;
+                return;
             }
         }
         for (int idEpicTask : epicTasks.keySet()) {
             if (id == idEpicTask) {
                 Epic epicTask = (Epic) epicTasks.get(idEpicTask);
-                for (int idSub : epicTask.getIdSubTasks()) {
-                    for (int idTasks : subTasks.keySet()) {
-                        if (idTasks == idSub) {
-                            subTasks.remove(idSub);
-                            break;
-                        }
-                    }
+                for (Integer idSub : getAllSubTaskInEpic(epicTask)) {
+                    subTasks.remove(idSub);
+                    historyManager.remove(idSub);
                 }
+                historyManager.remove(idEpicTask);
                 epicTasks.remove(idEpicTask);
-                break;
+                return;
             }
         }
     }
@@ -213,13 +212,13 @@ public class InMemoryTaskManager implements TaskManager {
     public ArrayList<Integer> getAllSubTaskInEpic(Epic epic) {
 
         allSubTaskIdInEpic.clear();
-            for (int idSub : epic.getIdSubTasks()) {
-                for (int idTasks : subTasks.keySet()) {
-                    if (idTasks == idSub) {
-                        allSubTaskIdInEpic.add(idTasks);
-                    }
+        for (int idSub : epic.getIdSubTasks()) {
+            for (int idTasks : subTasks.keySet()) {
+                if (idTasks == idSub) {
+                    allSubTaskIdInEpic.add(idTasks);
                 }
             }
+        }
         return allSubTaskIdInEpic;
     }
 
@@ -238,4 +237,5 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Object> getEpicTasks() {
         return epicTasks;
     }
+
 }

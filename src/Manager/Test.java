@@ -13,54 +13,27 @@ public class Test {
     public static void main(String[] args) {
         Managers managers = new Managers();
         TaskManager taskManager = managers.getDefault();
-        Task task = new Task(taskManager.giveId(),"Переезд", "привезти");
-        taskManager.addTask(task);
-        Epic epic = new Epic(taskManager.giveId(), "Разгрузка","описание");
-        taskManager.addEpicTask(epic);
-        SubTask subTask = new SubTask(taskManager.giveId(), "Выгрузить",
-                "принять вещи в транспортной компании", epic.getId());
-        taskManager.addSubTask(subTask);
-        SubTask subTask1 = new SubTask(taskManager.giveId(), "Привезти",
-                "Привезти вези из тк", epic.getId());
-        taskManager.addSubTask(subTask1);
-        Epic epic1 = new Epic(taskManager.giveId(), "Обустройство", "object");
+
+        Epic epic1 = new Epic(taskManager.giveId(), "Разгрузка","описание");
         taskManager.addEpicTask(epic1);
-        SubTask subTask2 = new SubTask(taskManager.giveId(), "улучшение придомовой территории",
-                "убрать весь мусор",epic1.getId());
+        SubTask subTask1 = new SubTask(taskManager.giveId(), "Выгрузить",
+                "принять вещи в транспортной компании", epic1.getId());
+        taskManager.addSubTask(subTask1);
+        SubTask subTask2 = new SubTask(taskManager.giveId(), "Привезти",
+                "Привезти вези из тк", epic1.getId());
         taskManager.addSubTask(subTask2);
-        taskManager.getEpicTask(epic.getId());
-        taskManager.getSubTask(subTask.getId());
-        taskManager.getTask(task.getId());
-        System.out.println(taskManager.getAllSubTaskInEpic(epic));
-        epic.removeTasksOnEpic(3);
-        System.out.println(taskManager.getAllSubTaskInEpic(epic));
-        /*for (Task task1 : taskManager.getHistory()) {
-            System.out.println(task1);
-            System.out.println(task1.getId());
-        }
-        taskManager.getAllTask();
-*/       /* System.out.println(epic.getIdSubTasks());
-        System.out.println(epic1.getIdSubTasks());
-        System.out.println(subTask1.getStatus());
-        System.out.println(subTask.getStatus());
-        System.out.println(epic.getStatus());
-        subTask.setStatus(Status.IN_PROGRESS);
-        subTask1.setStatus(Status.DONE);
-        taskManager.updateSubTask(subTask);
-        System.out.println(subTask1.getStatus());
-        System.out.println(epic.getStatus());
-        System.out.println(taskManager.getAllTaskId());
-        taskManager.getAllSubTaskInEpic();
-        taskManager.getTasks();
-        System.out.println(taskManager.getAllSubTaskInEpic());
-        System.out.println(taskManager.getSubTasks().size());
-        taskManager.deleteTask(subTask.getId());
-        //taskManager.deleteAll();
-        taskManager.deleteTask(subTask2.getId());
-        System.out.println(taskManager.getSubTasks().size());
-        System.out.println(taskManager.getEpicTasks().size());
-        taskManager.deleteTask(epic.getId());
-        System.out.println(taskManager.getEpicTasks().size());
-*/
+        SubTask subTask3 = new SubTask(taskManager.giveId(), "Приdtи",
+                "123Привезти вkkkи из тк", epic1.getId());
+        taskManager.addSubTask(subTask3);
+        Epic epic2 = new Epic(taskManager.giveId(), "Обустройство", "object");
+        taskManager.addEpicTask(epic2);
+        taskManager.getEpicTask(epic1.getId());
+        taskManager.getSubTask(subTask1.getId());
+        taskManager.getSubTask(subTask2.getId());
+        taskManager.getSubTask(subTask3.getId());
+        taskManager.getEpicTask(epic2.getId());
+        System.out.println(taskManager.getHistory());
+        taskManager.deleteTask(epic1.getId());
+        System.out.println(taskManager.getHistory());
     }
 }
