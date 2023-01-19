@@ -5,12 +5,12 @@ import DataTask.Task;
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    List<Task> historyTracker = new ArrayList<>();
-    HashMap<Integer, Node> temporaryHistory = new HashMap<>();
+
+    private HashMap<Integer, Node> temporaryHistory = new HashMap<>();
     public Node<Task> head;
     public Node<Task> tail;
 
-    public Node linkLast(Task task) { // добавление задачи в конец списка
+    public Node linkLast(Task task) {
 
         final Node<Task> oldTail = tail;
         final Node<Task> newNode = new Node<>(task, null, oldTail);
@@ -23,8 +23,9 @@ public class InMemoryHistoryManager implements HistoryManager {
         return newNode;
     }
 
-    public List<Task> getTasks() { // собирает задачи в array лист
+    public List<Task> getTasks() {
 
+        List<Task> historyTracker = new ArrayList<>();
         historyTracker.clear();
         for (Node task : temporaryHistory.values()) {
             historyTracker.add((Task) task.data);
@@ -32,12 +33,12 @@ public class InMemoryHistoryManager implements HistoryManager {
         return historyTracker;
     }
 
-    public void removeNode(Node node) { // вырезает ноду
+    public void removeNode(Node node) {
 
         Node nodePrev = node.prev;
         Node nodeNext = node.next;
 
-        if(node.equals(head) && node.equals(tail)) {
+        if (node.equals(head) && node.equals(tail)) {
             return;
         }
 
@@ -67,17 +68,18 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
 
     public List<Task> getHistory() {
-
         return getTasks();
     }
 
     public void remove(int id) {
 
-        for (Task task : historyTracker) {
-            if (id == task.getId()) {
-                temporaryHistory.remove(task.getId());
-                historyTracker.remove(task);
-                break;
+        if (!temporaryHistory.isEmpty()) {
+            Iterator<Map.Entry<Integer, Node>> idIterator = temporaryHistory.entrySet().iterator();
+            while (idIterator.hasNext()) {
+                Integer nextId = idIterator.next().getKey();
+                if (nextId == id) {
+                    idIterator.remove();
+                }
             }
         }
     }
