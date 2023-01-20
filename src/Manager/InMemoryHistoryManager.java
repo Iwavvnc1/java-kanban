@@ -11,7 +11,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     public Node<Task> tail;
 
     public Node linkLast(Task task) {
-
         final Node<Task> oldTail = tail;
         final Node<Task> newNode = new Node<>(task, null, oldTail);
         tail = newNode;
@@ -24,7 +23,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public List<Task> getTasks() {
-
         List<Task> historyTracker = new ArrayList<>();
         historyTracker.clear();
         for (Node task : temporaryHistory.values()) {
@@ -34,7 +32,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public void removeNode(Node node) {
-
         Node nodePrev = node.prev;
         Node nodeNext = node.next;
 
@@ -57,12 +54,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-
+        if (temporaryHistory.containsKey(task.getId())) {
+            remove(task.getId());
+        }
         Node newNode = linkLast(task);
-        removeNode(newNode);
         temporaryHistory.put(task.getId(), newNode);
-
-
     }
 
     @Override
@@ -71,17 +67,9 @@ public class InMemoryHistoryManager implements HistoryManager {
         return getTasks();
     }
 
+    @Override
     public void remove(int id) {
-
-        if (!temporaryHistory.isEmpty()) {
-            Iterator<Map.Entry<Integer, Node>> idIterator = temporaryHistory.entrySet().iterator();
-            while (idIterator.hasNext()) {
-                Integer nextId = idIterator.next().getKey();
-                if (nextId == id) {
-                    idIterator.remove();
-                }
-            }
-        }
+        removeNode(temporaryHistory.remove(id));
     }
 
     class Node<Task> {
