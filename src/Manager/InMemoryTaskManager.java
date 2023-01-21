@@ -16,9 +16,9 @@ public class InMemoryTaskManager implements TaskManager {
     Task searchTask;
     private ArrayList<Integer> allTaskId = new ArrayList<>();
     private ArrayList<Integer> allSubTaskIdInEpic = new ArrayList<>();
-    private HashMap<Integer, Object> tasks = new HashMap<>();
-    private HashMap<Integer, Object> subTasks = new HashMap<>();
-    private HashMap<Integer, Object> epicTasks = new HashMap<>();
+    private HashMap<Integer, Task> tasks = new HashMap<>();
+    private HashMap<Integer, Task> subTasks = new HashMap<>();
+    private HashMap<Integer, Task> epicTasks = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     public int giveId() {
@@ -70,30 +70,26 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void updateStatusEpic(int id) {
         int countSubTaskDONE = 0;
-        for (int idEpicTask : epicTasks.keySet()) {
-            if (id == idEpicTask) {
-                Epic epicTask = (Epic) epicTasks.get(idEpicTask);
-                for (int idSub : epicTask.getIdSubTasks()) {
-                    for (int idSubTasks : subTasks.keySet()) {
-                        if (idSubTasks == idSub) {
-                            SubTask subTask = (SubTask) subTasks.get(idSubTasks);
-                            if (subTask.getStatus().equals(Status.IN_PROGRESS)) {
-                                epicTask.setStatus(Status.IN_PROGRESS);
-                                break;
-                            }
-                            if (subTask.getStatus().equals(Status.DONE)) {
-                                countSubTaskDONE++;
-                                epicTask.setStatus(Status.IN_PROGRESS);
-                            }
-                            if (countSubTaskDONE == epicTask.getIdSubTasks().size()) {
-                                epicTask.setStatus(Status.DONE);
-                            }
-                        }
+        Epic epicTask = (Epic) epicTasks.get(id);
+        for (int idSub : epicTask.getIdSubTasks()) {
+            for (int idSubTasks : subTasks.keySet()) {
+                if (idSubTasks == idSub) {
+                    SubTask subTask = (SubTask) subTasks.get(idSubTasks);
+                    if (subTask.getStatus().equals(Status.IN_PROGRESS)) {
+                        epicTask.setStatus(Status.IN_PROGRESS);
+                        break;
+                    }
+                    if (subTask.getStatus().equals(Status.DONE)) {
+                        countSubTaskDONE++;
+                        epicTask.setStatus(Status.IN_PROGRESS);
+                    }
+                    if (countSubTaskDONE == epicTask.getIdSubTasks().size()) {
+                        epicTask.setStatus(Status.DONE);
                     }
                 }
-                updateEpicTask(epicTask);
             }
         }
+        updateEpicTask(epicTask);
     }
 
     @Override
@@ -131,6 +127,7 @@ public class InMemoryTaskManager implements TaskManager {
                 }
                 historyManager.remove(idEpicTask);
                 epicTasks.remove(idEpicTask);
+
                 return;
             }
         }
@@ -138,39 +135,21 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) { // метод получения задачи по id
-        searchTask = null;
-        for (int idTask : tasks.keySet()) {
-            if (id == idTask) {
-                searchTask = (Task) tasks.get(idTask);
-                break;
-            }
-        }
+        searchTask = tasks.get(id);
         historyManager.add(searchTask);
         return searchTask;
     }
 
     @Override
     public Task getSubTask(int id) {
-        searchTask = null;
-        for (int idSubTask : subTasks.keySet()) {
-            if (id == idSubTask) {
-                searchTask = (Task) subTasks.get(idSubTask);
-                break;
-            }
-        }
+        searchTask = subTasks.get(id);
         historyManager.add(searchTask);
         return searchTask;
     }
 
     @Override
     public Task getEpicTask(int id) {
-        searchTask = null;
-        for (int idEpicTask : epicTasks.keySet()) {
-            if (id == idEpicTask) {
-                searchTask = (Task) epicTasks.get(idEpicTask);
-                break;
-            }
-        }
+        searchTask = epicTasks.get(id);
         historyManager.add(searchTask);
         return searchTask;
     }
@@ -211,15 +190,15 @@ public class InMemoryTaskManager implements TaskManager {
         return allTaskId;
     }
 
-    public HashMap<Integer, Object> getTasks() {
+    public HashMap<Integer, Task> getTasks() {
         return tasks;
     }
 
-    public HashMap<Integer, Object> getSubTasks() {
+    public HashMap<Integer, Task> getSubTasks() {
         return subTasks;
     }
 
-    public HashMap<Integer, Object> getEpicTasks() {
+    public HashMap<Integer, Task> getEpicTasks() {
         return epicTasks;
     }
 

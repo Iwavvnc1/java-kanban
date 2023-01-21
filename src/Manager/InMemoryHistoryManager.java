@@ -34,30 +34,38 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private void removeNode(Node node) {
         if (node.equals(head) && node.equals(tail)) {
-            node.data = null;
-            node.next = null;
-            node.prev = null;
             head = null;
             tail = null;
             return;
         }
         if (node.equals(head)) {
             if (head.next.equals(tail)) {
-                head = new Node(tail.data, null, null);
+                head.data = tail.data;
+                head.next = null;
                 tail = head;
+                temporaryHistory.put(head.data.getId(),head);
             } else {
-                head = new Node(head.next.data, head.next.next, null);
+                head.data = head.next.data;
+                head.next = head.next.next;
                 head.next.prev = head;
             }
-            temporaryHistory.put(head.data.getId(), head);
+
             return;
         } else {
             node.prev.next = node.next;
         }
         if (node.equals(tail)) {
-            tail = new Node(tail.prev.data, null, tail.prev.prev);
-            tail.prev.next = tail;
-            temporaryHistory.put(tail.data.getId(), tail);
+            if (tail.prev.equals(head)) {
+                tail.data = head.data;
+                tail.prev = null;
+                head = tail;
+                temporaryHistory.put(tail.data.getId(),tail);
+            } else {
+                tail.data = tail.prev.data;
+                tail.prev = tail.prev.prev;
+                tail.prev.next = tail;
+            }
+
         } else {
             node.next.prev = node.prev;
         }
@@ -65,9 +73,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (tail != null && task.equals(tail.data)) {
-            return;
-        }
         if (temporaryHistory.containsKey(task.getId())) {
             remove(task.getId());
         }

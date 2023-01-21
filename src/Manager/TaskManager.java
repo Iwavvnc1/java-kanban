@@ -42,9 +42,9 @@ public interface TaskManager {
 
     ArrayList<Integer> getAllTaskId();
 
-    HashMap<Integer, Object> getTasks();
+    HashMap<Integer, Task> getTasks();
 
-    HashMap<Integer, Object> getSubTasks();
+    HashMap<Integer, Task> getSubTasks();
 
-    HashMap<Integer, Object> getEpicTasks();
+    HashMap<Integer, Task> getEpicTasks();
 }
