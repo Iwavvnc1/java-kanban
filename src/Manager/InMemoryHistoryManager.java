@@ -7,12 +7,12 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
 
     private HashMap<Integer, Node> temporaryHistory = new HashMap<>();
-    private Node<Task> head;
-    private Node<Task> tail;
+    private Node head;
+    private Node tail;
 
     private Node linkLast(Task task) {
-        final Node<Task> oldTail = tail;
-        final Node<Task> newNode = new Node<>(task, null, oldTail);
+        final Node oldTail = tail;
+        final Node newNode = new Node(task, null, oldTail);
         tail = newNode;
         if (oldTail == null) {
             head = newNode;
@@ -26,48 +26,43 @@ public class InMemoryHistoryManager implements HistoryManager {
         List<Task> historyTracker = new ArrayList<>();
         Node node = head;
         while (node != null) {
-            historyTracker.add((Task) node.data);
+            historyTracker.add(node.data);
             node = node.next;
         }
         return historyTracker;
     }
 
     private void removeNode(Node node) {
-        if (node.equals(head) && node.equals(tail)) {
-            head = null;
-            tail = null;
-            return;
-        }
-        if (node.equals(head)) {
-            if (head.next.equals(tail)) {
-                head.data = tail.data;
-                head.next = null;
-                tail = head;
-                temporaryHistory.put(head.data.getId(),head);
-            } else {
-                head.data = head.next.data;
-                head.next = head.next.next;
-                head.next.prev = head;
+        if (node != null) {
+            temporaryHistory.remove(node.data.getId());
+            if (node.equals(head) && node.equals(tail)) {
+                head = null;
+                tail = null;
+                return;
             }
-
-            return;
-        } else {
-            node.prev.next = node.next;
-        }
-        if (node.equals(tail)) {
-            if (tail.prev.equals(head)) {
-                tail.data = head.data;
-                tail.prev = null;
-                head = tail;
-                temporaryHistory.put(tail.data.getId(),tail);
+            if (node.equals(head)) {
+                if (head.next.equals(tail)) {
+                    tail.prev = null;
+                    head = tail;
+                } else {
+                    head = head.next;
+                    head.prev = null;
+                }
+                return;
             } else {
-                tail.data = tail.prev.data;
-                tail.prev = tail.prev.prev;
-                tail.prev.next = tail;
+                node.prev.next = node.next;
             }
-
-        } else {
-            node.next.prev = node.prev;
+            if (node.equals(tail)) {
+                if (tail.prev.equals(head)) {
+                    head.next = null;
+                    tail = head;
+                } else {
+                    tail = tail.prev;
+                    tail.next = null;
+                }
+            } else {
+                node.next.prev = node.prev;
+            }
         }
     }
 
@@ -90,13 +85,13 @@ public class InMemoryHistoryManager implements HistoryManager {
         removeNode(temporaryHistory.remove(id));
     }
 
-    private class Node<Task> {
+    private class Node {
 
         private Task data;
-        private Node<Task> next;
-        private Node<Task> prev;
+        private Node next;
+        private Node prev;
 
-        private Node(Task data, Node<Task> next, Node<Task> prev) {
+        private Node(Task data, Node next, Node prev) {
             this.data = data;
             this.next = next;
             this.prev = prev;
