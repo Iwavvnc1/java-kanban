@@ -3,9 +3,9 @@ package DataTask;
 public class Task {
 
     private final int id;
-    private String title;
-    private String description;
-    Status status;
+    private final String title;
+    private final String description;
+    private Status status;
 
     public Task(int id, String title, String description) {
         this.id = id;

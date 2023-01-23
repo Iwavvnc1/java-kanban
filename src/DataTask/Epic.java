@@ -6,8 +6,7 @@ import java.util.List;
 
 public class Epic extends Task {
 
-    private List<Integer> idSubTasks = new ArrayList<>(); /*List<SubTask> мы это еще не изучали, и на QA сказали тут id
-    хранить а не задачи*/
+    private List<Integer> idSubTasks = new ArrayList<>();
 
     public Epic(int id, String title, String description) {
         super(id, title, description);

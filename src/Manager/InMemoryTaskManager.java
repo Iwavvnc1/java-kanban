@@ -8,17 +8,18 @@ import DataTask.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
 
     static private int id = 0;
-    int epicId;
-    Task searchTask;
-    private ArrayList<Integer> allTaskId = new ArrayList<>();
-    private ArrayList<Integer> allSubTaskIdInEpic = new ArrayList<>();
-    private HashMap<Integer, Task> tasks = new HashMap<>();
-    private HashMap<Integer, Task> subTasks = new HashMap<>();
-    private HashMap<Integer, Task> epicTasks = new HashMap<>();
+    private int epicId;
+    private Task searchTask;
+    private final List<Integer> allTaskId = new ArrayList<>();
+    private final List<Integer> allSubTaskIdInEpic = new ArrayList<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Task> subTasks = new HashMap<>();
+    private final Map<Integer, Task> epicTasks = new HashMap<>();
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
     public int giveId() {
@@ -27,7 +28,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addTask(Task task) { // Блок методов добавления и сохранения задач
+    public int addTask(Task task) {
         tasks.put(task.getId(), task);
         return task.getId();
     }
@@ -93,7 +94,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteAll() { // Блок методов удаления задач
+    public void deleteAll() {
         tasks.clear();
         subTasks.clear();
         epicTasks.clear();
@@ -134,7 +135,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(int id) { // метод получения задачи по id
+    public Task getTask(int id) {
         searchTask = tasks.get(id);
         historyManager.add(searchTask);
         return searchTask;
@@ -160,21 +161,15 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Integer> getAllTask() { // метод получения списка всех задач
-        for (int idTask : tasks.keySet()) {
-            allTaskId.add(idTask);
-        }
-        for (int idSubTask : subTasks.keySet()) {
-            allTaskId.add(idSubTask);
-        }
-        for (int idEpicTask : epicTasks.keySet()) {
-            allTaskId.add(idEpicTask);
-        }
+    public List<Integer> getAllTask() {
+        allTaskId.addAll(tasks.keySet());
+        allTaskId.addAll(subTasks.keySet());
+        allTaskId.addAll(epicTasks.keySet());
         return allTaskId;
     }
 
     @Override
-    public ArrayList<Integer> getAllSubTaskInEpic(Epic epic) {
+    public List<Integer> getAllSubTaskInEpic(Epic epic) {
         allSubTaskIdInEpic.clear();
         for (int idSub : epic.getIdSubTasks()) {
             for (int idTasks : subTasks.keySet()) {
@@ -186,19 +181,19 @@ public class InMemoryTaskManager implements TaskManager {
         return allSubTaskIdInEpic;
     }
 
-    public ArrayList<Integer> getAllTaskId() {
+    public List<Integer> getAllTaskId() {
         return allTaskId;
     }
 
-    public HashMap<Integer, Task> getTasks() {
+    public Map<Integer, Task> getTasks() {
         return tasks;
     }
 
-    public HashMap<Integer, Task> getSubTasks() {
+    public Map<Integer, Task> getSubTasks() {
         return subTasks;
     }
 
-    public HashMap<Integer, Task> getEpicTasks() {
+    public Map<Integer, Task> getEpicTasks() {
         return epicTasks;
     }
 }

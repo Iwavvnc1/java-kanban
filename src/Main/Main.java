@@ -8,8 +8,8 @@ import Manager.TaskManager;
 
 public class Main {
         public static void main(String[] args) {
-            Managers managers = new Managers();
-            TaskManager taskManager = managers.getDefault();
+
+            TaskManager taskManager = Managers.getDefault();
             Task task1 = new Task(taskManager.giveId(), "таск 1", "описание 1");
             taskManager.addTask(task1);
             Task task2 = new Task(taskManager.giveId(), "таск 2", "описание 2");

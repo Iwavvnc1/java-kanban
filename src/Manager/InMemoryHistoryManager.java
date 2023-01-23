@@ -2,11 +2,14 @@ package Manager;
 
 import DataTask.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private HashMap<Integer, Node> temporaryHistory = new HashMap<>();
+    private final Map<Integer, Node> temporaryHistory = new HashMap<>();
     private Node head;
     private Node tail;
 
@@ -35,13 +38,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     private void removeNode(Node node) {
         if (node != null) {
             temporaryHistory.remove(node.data.getId());
-            if (node.equals(head) && node.equals(tail)) {
+            if (node == head && node == tail) {
                 head = null;
                 tail = null;
                 return;
             }
-            if (node.equals(head)) {
-                if (head.next.equals(tail)) {
+            if (node == head) {
+                if (head.next == tail) {
                     tail.prev = null;
                     head = tail;
                 } else {
@@ -52,8 +55,8 @@ public class InMemoryHistoryManager implements HistoryManager {
             } else {
                 node.prev.next = node.next;
             }
-            if (node.equals(tail)) {
-                if (tail.prev.equals(head)) {
+            if (node == tail) {
+                if (tail.prev == head) {
                     head.next = null;
                     tail = head;
                 } else {
