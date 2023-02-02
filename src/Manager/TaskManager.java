@@ -4,20 +4,20 @@ import DataTask.Epic;
 import DataTask.SubTask;
 import DataTask.Task;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.List;
 
 public interface TaskManager {
-
     List<Task> getHistory();
 
     int giveId();
 
-    int addTask(Task task);
+    void addTask(Task task) throws IOException;
 
-    int addSubTask(SubTask subTask);
+    void addSubTask(SubTask subTask);
 
-    int addEpicTask(Epic epic);
+    void addEpicTask(Epic epic);
 
     void updateTask(Task task);
 

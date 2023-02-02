@@ -1,7 +1,8 @@
 package DataTask;
 
 public class SubTask extends Task {
-   private final int epicId;
+    private final int epicId;
+    private final TypeTask type;
 
     public int getEpicId() {
 
@@ -11,5 +12,22 @@ public class SubTask extends Task {
     public SubTask(int id, String title, String description, int epicId) {
         super(id, title, description);
         this.epicId = epicId;
+        this.type = TypeTask.SUBTASK;
+    }
+    public SubTask(int id, String title, String description, int epicId, Status status) {
+        super(id, title, description,status);
+        this.epicId = epicId;
+        this.type = TypeTask.SUBTASK;
+    }
+
+    @Override
+    public TypeTask getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+        return getId() + ",," + type + ",," + getTitle() + ",," + getStatus() + ",,"
+                + getDescription() + ",," + getEpicId() + "\n";
     }
 }

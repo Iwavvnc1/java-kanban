@@ -12,15 +12,19 @@ import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    static private int id = 0;
-    private int epicId;
-    private Task searchTask;
-    private final List<Integer> allTaskId = new ArrayList<>();
-    private final List<Integer> allSubTaskIdInEpic = new ArrayList<>();
-    private final Map<Integer, Task> tasks = new HashMap<>();
-    private final Map<Integer, Task> subTasks = new HashMap<>();
-    private final Map<Integer, Task> epicTasks = new HashMap<>();
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    static protected int id = 0;
+    protected int epicId;
+    protected Task searchTask;
+    protected final List<Integer> allTaskId = new ArrayList<>();
+    protected final List<Integer> allSubTaskIdInEpic = new ArrayList<>();
+    protected final Map<Integer, Task> tasks = new HashMap<>();
+    protected final Map<Integer, Task> subTasks = new HashMap<>();
+    protected final Map<Integer, Task> epicTasks = new HashMap<>();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
 
     public int giveId() {
         id++;
@@ -28,13 +32,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addTask(Task task) {
+    public void addTask(Task task) {
         tasks.put(task.getId(), task);
-        return task.getId();
     }
 
     @Override
-    public int addSubTask(SubTask subTask) {
+    public void addSubTask(SubTask subTask) {
         subTasks.put(subTask.getId(), subTask);
         for (int idEpicTask : epicTasks.keySet()) {
             if (subTask.getEpicId() == idEpicTask) {
@@ -43,14 +46,13 @@ public class InMemoryTaskManager implements TaskManager {
                 epicTasks.put(idEpicTask, updateTask);
             }
         }
-        return subTask.getId();
     }
 
     @Override
-    public int addEpicTask(Epic epic) {
+    public void addEpicTask(Epic epic) {
         epicId = id;
         epicTasks.put(epic.getId(), epic);
-        return epic.getId();
+
     }
 
     @Override
