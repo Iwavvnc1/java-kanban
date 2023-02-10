@@ -11,19 +11,9 @@ import java.util.List;
 public interface TaskManager {
     List<Task> getHistory();
 
-    int giveId();
-
     void addTask(Task task) throws IOException;
 
-    void addSubTask(SubTask subTask);
-
-    void addEpicTask(Epic epic);
-
     void updateTask(Task task);
-
-    void updateSubTask(SubTask subTask);
-
-    void updateEpicTask(Epic epic);
 
     void deleteAll();
 
@@ -31,19 +21,15 @@ public interface TaskManager {
 
     Task getTask(int id);
 
-    Task getSubTask(int id);
-
-    Task getEpicTask(int id);
-
-    List<Integer> getAllTask();
+    Map<Integer, Task> getAllTask();
 
     List<Integer> getAllSubTaskInEpic(Epic epic);
-
-    List<Integer> getAllTaskId();
 
     Map<Integer, Task> getTasks();
 
     Map<Integer, Task> getSubTasks();
 
     Map<Integer, Task> getEpicTasks();
+
+    public void updateStatusEpic(int id);
 }
