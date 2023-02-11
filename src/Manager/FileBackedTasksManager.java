@@ -31,8 +31,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             if (br.readLine() == null) {
                 writer.write("id,,type,,name,,status,,description,,epic" + "\n");
             }
-            for (Integer id : getAllTask().keySet()) {
-                writer.write(getAllTask().get(id).toString());
+            for (Integer id : getAllTasks().keySet()) {
+                writer.write(getAllTasks().get(id).toString());
             }
             writer.write("\n");
             if (getHistoryManager().getHistory().size() != 0) {
@@ -168,7 +168,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             taskManager.addTask(subTask3);
             Epic epic2 = new Epic(giveId(), "эпик2", "описание эпик2");
             taskManager.addTask(epic2);
-            taskManager.getAllTask();
+            taskManager.getAllTasks();
             taskManager.getTask(epic1.getId());
             taskManager.getTask(subTask1.getId());
             taskManager.getTask(subTask2.getId());

@@ -12,43 +12,44 @@ class TaskTest {
     @Test
     void getId() {
         Task task = new Task(0, "name", "description");
-        assertEquals(0, task.getId());
+        assertEquals(0, task.getId(), "Не верно выводится Id");
     }
 
     @Test
     void getStatus() {
         Task task = new Task(0, "name", "description");
-        assertEquals(Status.NEW, task.getStatus());
+        assertEquals(Status.NEW, task.getStatus(), "Не верно выводится status");
     }
 
     @Test
     void getType() {
         Task task = new Task(0, "name", "description");
-        assertEquals(TypeTask.TASK, task.getType());
+        assertEquals(TypeTask.TASK, task.getType(), "Не верно выводится TYPE");
     }
 
     @Test
     void getTitle() {
         Task task = new Task(0, "name", "description");
-        assertEquals("name", task.getTitle());
+        assertEquals("name", task.getTitle(), "Не верно выводится title");
     }
 
     @Test
     void getDescription() {
         Task task = new Task(0, "name", "description");
-        assertEquals("description", task.getDescription());
+        assertEquals("description", task.getDescription(), "Не верно выводится description");
     }
 
     @Test
     void setStatus() {
         Task task = new Task(0, "name", "description");
         task.setStatus(Status.DONE);
-        assertEquals(Status.DONE, task.getStatus());
+        assertEquals(Status.DONE, task.getStatus(), "Не верно вводится status");
     }
 
     @Test
     void testToString() {
         Task task = new Task(0, "name", "description");
-        assertEquals("0,,TASK,,name,,NEW,,description,," + "\n", task.toString());
+        assertEquals("0,,TASK,,name,,NEW,,description,," + "\n", task.toString(), "Не верно работает " +
+                "метод task.toString ");
     }
 }

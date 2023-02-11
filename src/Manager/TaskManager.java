@@ -21,7 +21,7 @@ public interface TaskManager {
 
     Task getTask(int id);
 
-    Map<Integer, Task> getAllTask();
+    Map<Integer, Task> getAllTasks();
 
     List<Integer> getAllSubTaskInEpic(Epic epic);
 

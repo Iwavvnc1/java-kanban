@@ -11,18 +11,19 @@ class SubTaskTest {
     @Test
     void getEpicId() {
         SubTask sub = new SubTask(0, "name", "description", 1);
-        assertEquals(1,sub.getEpicId());
+        assertEquals(1, sub.getEpicId(), "Не верно выводится EpicId в Sub");
     }
 
     @Test
     void getType() {
-        SubTask sub = new SubTask(0,"name","description",1);
-        assertEquals(TypeTask.SUBTASK,sub.getType());
+        SubTask sub = new SubTask(0, "name", "description", 1);
+        assertEquals(TypeTask.SUBTASK, sub.getType(), "Не верно выводится TYPE");
     }
 
     @Test
     void testToString() {
-        SubTask sub = new SubTask(0,"name","description",1);
-        assertEquals("0,,SUBTASK,,name,,NEW,,description,,1" + "\n",sub.toString());
+        SubTask sub = new SubTask(0, "name", "description", 1);
+        assertEquals("0,,SUBTASK,,name,,NEW,,description,,1" + "\n", sub.toString(), "Не верно работает " +
+                "метод sub.toString ");
     }
 }

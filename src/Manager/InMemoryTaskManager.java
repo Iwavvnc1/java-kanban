@@ -11,7 +11,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     static protected int id = 0;
     protected int epicId;
-    protected final Map<Integer, Task> allTask = new HashMap<>();
+    protected final Map<Integer, Task> allTasks = new HashMap<>();
     protected List<Integer> allSubTaskIdInEpic = new ArrayList<>();
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Task> subTasks = new HashMap<>();
@@ -29,7 +29,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
-        allTask.put(task.getId(), task);
+        allTasks.put(task.getId(), task);
         switch (task.getType()) {
             case TASK: {
                 tasks.put(task.getId(), task);
@@ -45,7 +45,7 @@ public class InMemoryTaskManager implements TaskManager {
                 Epic updateTask = (Epic) epicTasks.get(task.getEpicId());
                 updateTask.addSubTasksOnEpic(task.getId());
                 epicTasks.put(updateTask.getId(), updateTask);
-                allTask.put(updateTask.getId(), updateTask);
+                allTasks.put(updateTask.getId(), updateTask);
                 break;
             }
         }
@@ -72,9 +72,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void updateStatusEpic(int id) {
         int countSubTaskDONE = 0;
-        Epic epicTask = (Epic) epicTasks.get(id);
+        if (allTasks.size() == 0) {
+            return;
+        }
+        Epic epicTask = (Epic) allTasks.get(id);
         for (int idSub : epicTask.getIdSubTasks()) {
-            switch (subTasks.get(idSub).getStatus()) {
+            switch (allTasks.get(idSub).getStatus()) {
                 case IN_PROGRESS: {
                     epicTask.setStatus(Status.IN_PROGRESS);
                     break;
@@ -97,13 +100,16 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.clear();
         subTasks.clear();
         epicTasks.clear();
-        allTask.clear();
+        allTasks.clear();
     }
 
     @Override
     public void deleteTask(int id) {
+        if(allTasks.size() == 0) {
+            return;
+        }
         historyManager.remove(id);
-        switch (allTask.get(id).getType()) {
+        switch (allTasks.get(id).getType()) {
             case TASK: {
                 tasks.remove(id);
                 break;
@@ -123,12 +129,15 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             }
         }
-        allTask.remove(id);
+        allTasks.remove(id);
     }
 
     @Override
     public Task getTask(int id) {
-        switch (allTask.get(id).getType()) {
+        if(allTasks.size() == 0) {
+            return null;
+        }
+        switch (allTasks.get(id).getType()) {
             case TASK: {
                 historyManager.add(tasks.get(id));
                 return tasks.get(id);
@@ -152,8 +161,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Map<Integer, Task> getAllTask() {
-        return allTask;
+    public Map<Integer, Task> getAllTasks() {
+        return allTasks;
     }
 
     @Override
