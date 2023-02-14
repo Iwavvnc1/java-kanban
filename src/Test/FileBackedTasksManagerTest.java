@@ -1,32 +1,10 @@
 package Test;
 
+import Manager.FileBackedTasksManager;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTasksManagerTest {
+class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>{
 
-    @Test
-    void addTask() {
-    }
-
-    @Test
-    void updateTask() {
-    }
-
-    @Test
-    void deleteAll() {
-    }
-
-    @Test
-    void deleteTask() {
-    }
-
-    @Test
-    void getTask() {
-    }
-
-    @Test
-    void main() {
-    }
 }

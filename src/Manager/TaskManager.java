@@ -1,12 +1,13 @@
 package Manager;
 
 import DataTask.Epic;
-import DataTask.SubTask;
 import DataTask.Task;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     List<Task> getHistory();
@@ -23,7 +24,7 @@ public interface TaskManager {
 
     Map<Integer, Task> getAllTasks();
 
-    List<Integer> getAllSubTaskInEpic(Epic epic);
+    List<Task> getAllSubTaskInEpic(Epic epic);
 
     Map<Integer, Task> getTasks();
 
@@ -32,4 +33,8 @@ public interface TaskManager {
     Map<Integer, Task> getEpicTasks();
 
     public void updateStatusEpic(int id);
+
+    public TreeSet<Task> getPrioritizedTasks();
+    public LocalDateTime getTimeNow();
+    public boolean checkTime(Task task);
 }

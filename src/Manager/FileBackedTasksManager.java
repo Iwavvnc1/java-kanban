@@ -8,6 +8,8 @@ import MyException.ThisNullPointer;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +31,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             FileReader reader = new FileReader(dir + "/" + fileName);
             BufferedReader br = new BufferedReader(reader);
             if (br.readLine() == null) {
-                writer.write("id,,type,,name,,status,,description,,epic" + "\n");
+                writer.write("id,,type,,name,,status,,description,,starTime,,duration,,epic,," + "\n");
             }
-            for (Integer id : getAllTasks().keySet()) {
-                writer.write(getAllTasks().get(id).toString());
+            for (Task task : getAllTasks().values()) {
+                writer.write(task.toString());
+                if(task.getStartTime() != null) {
+                    writer.write(task.getStartTime().format(formatter) + ",,");
+                } else {
+                    writer.write("null,,");
+                }
+                if(task.getDuration() != null) {
+                    writer.write(Integer.parseInt(String.valueOf(task.getDuration().toSeconds())) + ",,");
+                } else {
+                    writer.write("null,,");
+                }
+                if(task.getType() == TypeTask.SUBTASK) {
+                    writer.write("" + task.getEpicId());
+                }
+                writer.write("\n");
             }
             writer.write("\n");
             if (getHistoryManager().getHistory().size() != 0) {
@@ -50,16 +66,38 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             if (id < Integer.parseInt(lineTask[0])) {
                 id = Integer.parseInt(lineTask[0]);
             }
+            if(lineTask[5].equals("null")) {
+                switch (lineTask[1]) {
+                    case "TASK": {
+                        return new Task(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4],
+                                Status.valueOf(lineTask[3]));
+                    }
+                    case "EPIC": {
+                        return new Epic(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4],
+                                Status.valueOf(lineTask[3]));
+                    }
+                    case "SUBTASK": {
+                        return new SubTask(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4],
+                                Integer.parseInt(lineTask[7]), Status.valueOf(lineTask[3]));
+                    }
+                }
+            }
             switch (lineTask[1]) {
                 case "TASK": {
-                    return new Task(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4], Status.valueOf(lineTask[3]));
+                    return new Task(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4],
+                            Status.valueOf(lineTask[3]), LocalDateTime.parse(lineTask[5],formatter),
+                            Duration.ofSeconds(Integer.parseInt(lineTask[6])));
                 }
                 case "EPIC": {
-                    return new Epic(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4], Status.valueOf(lineTask[3]));
+                    return new Epic(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4],
+                            Status.valueOf(lineTask[3]), LocalDateTime.parse(lineTask[5],formatter),
+                            Duration.ofSeconds(Integer.parseInt(lineTask[6])));
                 }
                 case "SUBTASK": {
                     return new SubTask(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4],
-                            Integer.parseInt(lineTask[5]), Status.valueOf(lineTask[3]));
+                            Integer.parseInt(lineTask[7]), Status.valueOf(lineTask[3]),
+                            LocalDateTime.parse(lineTask[5],formatter),
+                            Duration.ofSeconds(Integer.parseInt(lineTask[6])));
                 }
             }
         }
@@ -90,7 +128,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             boolean isHistory = false;
             while (br.ready()) {
                 String newLine = br.readLine();
-                if (newLine.equals("id,,type,,name,,status,,description,,epic")) {
+                if (newLine.equals("id,,type,,name,,status,,description,,starTime,,duration,,epic,,")) {
                     continue;
                 }
                 if (isHistory) {
@@ -155,26 +193,33 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             taskManager.addTask(task1);
             Task task2 = new Task(giveId(), "таск 2", "описание 2");
             taskManager.addTask(task2);
-            Epic epic1 = new Epic(giveId(), "эпик1", "описание эпик1, у которого есть сабы");
+            Epic epic1 = new Epic(giveId(), "эпик1", "описание эпик1");
             taskManager.addTask(epic1);
             SubTask subTask1 = new SubTask(giveId(), "саб1-1",
-                    "описание саб1-1", epic1.getId());
+                    "описание саб1-1", epic1.getId(),
+                    LocalDateTime.of(2002,10,13,2,12), Duration.ofMinutes(10));
             taskManager.addTask(subTask1);
             SubTask subTask2 = new SubTask(giveId(), "саб2-1",
-                    "описание саб2-1", epic1.getId());
+                    "описание саб2-1", epic1.getId(),
+                    LocalDateTime.of(2002,10,13,2,00), Duration.ofMinutes(11));
             taskManager.addTask(subTask2);
             SubTask subTask3 = new SubTask(giveId(), "саб3-1",
-                    "описание саб3-1", epic1.getId());
+                    "описание саб3-1", epic1.getId(),
+                    LocalDateTime.of(2002,10,13,2,30), Duration.ofMinutes(12));
             taskManager.addTask(subTask3);
             Epic epic2 = new Epic(giveId(), "эпик2", "описание эпик2");
             taskManager.addTask(epic2);
+            SubTask subTask4 = new SubTask(giveId(), "саб3-1",
+                    "описание саб3-1", epic1.getId(),
+                    LocalDateTime.of(2002,10,13,2,24), Duration.ofMinutes(5));
+            taskManager.addTask(subTask4);
             taskManager.getAllTasks();
             taskManager.getTask(epic1.getId());
             taskManager.getTask(subTask1.getId());
             taskManager.getTask(subTask2.getId());
             taskManager.getTask(subTask3.getId());
             TaskManager taskManager2 = loadFromFile(file);
-            System.out.println("История 1 менеджера");
+            /*System.out.println("История 1 менеджера");
             System.out.println(taskManager.getHistory());
             System.out.println("История 2 менеджера");
             System.out.println(taskManager2.getHistory());
@@ -189,15 +234,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             System.out.println("эпики 1 менеджера");
             System.out.println(taskManager.getEpicTasks());
             System.out.println("эпики 2 менеджера");
-            System.out.println(taskManager2.getEpicTasks());
+            System.out.println(taskManager2.getEpicTasks());*/
             //TaskManager taskManager2 = loadFromFile(file);
             Task task3 = new Task(giveId(), "таск 3", "описание 3");
             taskManager2.addTask(task3);
-            System.out.println(taskManager2.getTasks());
+            for (Task prioritizedTask : taskManager.getPrioritizedTasks()) {
+                System.out.println(prioritizedTask.getStartTime());
+            }
+           // System.out.println(taskManager2.getTasks());
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка ввода/вывода");
         } catch (NullPointerException e) {
-            throw new ThisNullPointer("Ошибка проведения операции с null/0");
+            throw new ThisNullPointer("Ошибка проведения операции с null/0",e);
         }
     }
 }

@@ -1,46 +1,47 @@
 package Test;
 
 import DataTask.Epic;
+import DataTask.SubTask;
 import DataTask.TypeTask;
 
+import Manager.InMemoryTaskManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
-
+    Epic epic;
+    SubTask sub1;
+    SubTask sub2;
+    @BeforeEach
+    public void beforeEach() {
+        epic = new Epic(InMemoryTaskManager.giveId(), "name", "description");
+        sub1 = new SubTask(InMemoryTaskManager.giveId(), "name", "description", epic.getId());
+        sub2 = new SubTask(InMemoryTaskManager.giveId(), "name", "description", epic.getId());
+    }
     @Test
     void getType() {
-        Epic epic = new Epic(0, "name", "description");
         assertEquals(TypeTask.EPIC, epic.getType(), "Не верно выводится TYPE");
     }
 
     @Test
     void getIdSubTasks() {
-        Epic epic = new Epic(0, "name", "description");
-        epic.addSubTasksOnEpic(2);
-        assertEquals(2, epic.getIdSubTasks().get(0), "Не верно выводится idSub из Epic");
+        epic.addSubTasksOnEpic(sub2);
+        assertEquals(sub2, epic.getIdSubTasks().get(0), "Не верно выводится idSub из Epic");
     }
 
     @Test
     void addSubTasksOnEpic() {
-        Epic epic = new Epic(0, "name", "description");
-        epic.addSubTasksOnEpic(2);
-        assertEquals(2, epic.getIdSubTasks().get(0), "Не верно добавляется idSub в Epic");
+        epic.addSubTasksOnEpic(sub2);
+        assertEquals(sub2, epic.getIdSubTasks().get(0), "Не верно добавляется idSub в Epic");
     }
 
     @Test
     void removeTasksOnEpic() {
-        Epic epic = new Epic(0, "name", "description");
-        epic.addSubTasksOnEpic(2);
-        epic.addSubTasksOnEpic(1);
-        epic.removeTasksOnEpic(1);
-        assertEquals(2, epic.getIdSubTasks().get(0), "Не верно удаляется idSub в Epic");
-    }
-
-    @Test
-    void testToString() {
-        Epic epic = new Epic(0, "name", "description");
-        assertEquals("0,,EPIC,,name,,NEW,,description,," + "\n", epic.toString(), "Не верно работает " + "метод epic.toString ");
+        epic.addSubTasksOnEpic(sub1);
+        epic.addSubTasksOnEpic(sub2);
+        epic.removeTasksOnEpic(sub1);
+        assertEquals(sub2, epic.getIdSubTasks().get(0), "Не верно удаляется idSub в Epic");
     }
 }

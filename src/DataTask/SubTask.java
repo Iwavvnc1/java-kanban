@@ -1,5 +1,9 @@
 package DataTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Locale;
+
 public class SubTask extends Task {
     private final int epicId;
     private final TypeTask type;
@@ -20,6 +24,18 @@ public class SubTask extends Task {
         this.type = TypeTask.SUBTASK;
     }
 
+    public SubTask(int id, String title, String description, int epicId, LocalDateTime startTime, Duration duration) {
+        super(id, title, description, startTime, duration);
+        this.epicId = epicId;
+        this.type = TypeTask.SUBTASK;
+    }
+    public SubTask(int id, String title, String description, int epicId, Status status,
+                   LocalDateTime startTime, Duration duration) {
+        super(id, title, description,status, startTime, duration);
+        this.epicId = epicId;
+        this.type = TypeTask.SUBTASK;
+    }
+
     @Override
     public TypeTask getType() {
         return type;
@@ -28,6 +44,6 @@ public class SubTask extends Task {
     @Override
     public String toString() {
         return getId() + ",," + type + ",," + getTitle() + ",," + getStatus() + ",,"
-                + getDescription() + ",," + getEpicId() + "\n";
+                + getDescription() + ",,";
     }
 }

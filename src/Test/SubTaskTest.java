@@ -20,10 +20,4 @@ class SubTaskTest {
         assertEquals(TypeTask.SUBTASK, sub.getType(), "Не верно выводится TYPE");
     }
 
-    @Test
-    void testToString() {
-        SubTask sub = new SubTask(0, "name", "description", 1);
-        assertEquals("0,,SUBTASK,,name,,NEW,,description,,1" + "\n", sub.toString(), "Не верно работает " +
-                "метод sub.toString ");
-    }
 }

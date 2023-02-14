@@ -1,7 +1,7 @@
 package MyException;
 
-public class ThisNullPointer extends NullPointerException {
-    public ThisNullPointer(String message) {
-        super(message);
+public class ThisNullPointer extends RuntimeException {
+    public ThisNullPointer(String message, Throwable cause) {
+        super(message,cause);
     }
 }

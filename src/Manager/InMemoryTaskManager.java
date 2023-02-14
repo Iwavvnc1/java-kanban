@@ -1,22 +1,24 @@
 package Manager;
 
 import DataTask.*;
+import MyException.TimeException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
     static protected int id = 0;
     protected int epicId;
+    protected final TreeSet<Task> allSortTasks = new TreeSet<>();
     protected final Map<Integer, Task> allTasks = new HashMap<>();
-    protected List<Integer> allSubTaskIdInEpic = new ArrayList<>();
+    protected List<Task> allSubTaskIdInEpic = new ArrayList<>();
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Task> subTasks = new HashMap<>();
     protected final Map<Integer, Task> epicTasks = new HashMap<>();
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
+    protected DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
 
     public HistoryManager getHistoryManager() {
         return historyManager;
@@ -29,46 +31,59 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
-        allTasks.put(task.getId(), task);
-        switch (task.getType()) {
-            case TASK: {
-                tasks.put(task.getId(), task);
-                break;
+        if (checkTime(task)) {
+            allTasks.put(task.getId(), task);
+            allSortTasks.add(task);
+            switch (task.getType()) {
+                case TASK: {
+                    tasks.put(task.getId(), task);
+                    break;
+                }
+                case EPIC: {
+                    epicId = id;
+                    epicTasks.put(task.getId(), task);
+                    break;
+                }
+                case SUBTASK: {
+                    subTasks.put(task.getId(), task);
+                    Epic updateTask = (Epic) epicTasks.get(task.getEpicId());
+                    updateTask.addSubTasksOnEpic(task);
+                    epicTasks.put(updateTask.getId(), updateTask);
+                    allTasks.put(updateTask.getId(), updateTask);
+                    break;
+                }
             }
-            case EPIC: {
-                epicId = id;
-                epicTasks.put(task.getId(), task);
-                break;
-            }
-            case SUBTASK: {
-                subTasks.put(task.getId(), task);
-                Epic updateTask = (Epic) epicTasks.get(task.getEpicId());
-                updateTask.addSubTasksOnEpic(task.getId());
-                epicTasks.put(updateTask.getId(), updateTask);
-                allTasks.put(updateTask.getId(), updateTask);
-                break;
-            }
+        } else {
+            throw new TimeException("Задача пересекается с другой по времени");
         }
     }
 
     @Override
     public void updateTask(Task task) {
-        switch (task.getType()) {
-            case TASK: {
-                tasks.put(task.getId(), task);
-                break;
+        if (checkTime(task)) {
+            allTasks.put(task.getId(), task);
+            allSortTasks.remove(task);
+            allSortTasks.add(task);
+            switch (task.getType()) {
+                case TASK: {
+                    tasks.put(task.getId(), task);
+                    break;
+                }
+                case EPIC: {
+                    epicTasks.put(task.getId(), task);
+                    break;
+                }
+                case SUBTASK: {
+                    updateStatusEpic(task.getEpicId());
+                    subTasks.put(task.getId(), task);
+                    break;
+                }
             }
-            case EPIC: {
-                epicTasks.put(task.getId(), task);
-                break;
-            }
-            case SUBTASK: {
-                updateStatusEpic(task.getEpicId());
-                subTasks.put(task.getId(), task);
-                break;
-            }
+        } else {
+            throw new TimeException("Задача пересекается с другой по времени.");
         }
     }
+
 
     public void updateStatusEpic(int id) {
         int countSubTaskDONE = 0;
@@ -76,8 +91,8 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         Epic epicTask = (Epic) allTasks.get(id);
-        for (int idSub : epicTask.getIdSubTasks()) {
-            switch (allTasks.get(idSub).getStatus()) {
+        for (Task subInEpic : epicTask.getIdSubTasks()) {
+            switch (subInEpic.getStatus()) {
                 case IN_PROGRESS: {
                     epicTask.setStatus(Status.IN_PROGRESS);
                     break;
@@ -105,7 +120,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void deleteTask(int id) {
-        if(allTasks.size() == 0) {
+        if (allTasks.size() == 0) {
             return;
         }
         historyManager.remove(id);
@@ -115,26 +130,27 @@ public class InMemoryTaskManager implements TaskManager {
                 break;
             }
             case EPIC: {
-                for (Integer idSub : getAllSubTaskInEpic((Epic) epicTasks.get(id))) {
-                    subTasks.remove(idSub);
-                    historyManager.remove(idSub);
+                for (Task subInEpic : getAllSubTaskInEpic((Epic) epicTasks.get(id))) {
+                    subTasks.remove(subInEpic.getId());
+                    historyManager.remove(subInEpic.getId());
                 }
                 epicTasks.remove(id);
                 break;
             }
             case SUBTASK: {
                 Epic epicTask = (Epic) epicTasks.get(subTasks.get(id).getEpicId());
-                epicTask.removeTasksOnEpic(id);
+                epicTask.removeTasksOnEpic(allTasks.get(id));
                 subTasks.remove(id);
                 break;
             }
         }
+        allSortTasks.remove(getTask(id));
         allTasks.remove(id);
     }
 
     @Override
     public Task getTask(int id) {
-        if(allTasks.size() == 0) {
+        if (allTasks.size() == 0) {
             return null;
         }
         switch (allTasks.get(id).getType()) {
@@ -166,11 +182,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Integer> getAllSubTaskInEpic(Epic epic) {
+    public List<Task> getAllSubTaskInEpic(Epic epic) {
         allSubTaskIdInEpic.clear();
         allSubTaskIdInEpic = epic.getIdSubTasks();
         return allSubTaskIdInEpic;
     }
+
 
     public Map<Integer, Task> getTasks() {
         return tasks;
@@ -182,5 +199,39 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Map<Integer, Task> getEpicTasks() {
         return epicTasks;
+    }
+
+    public TreeSet<Task> getPrioritizedTasks() {
+        return allSortTasks;
+    }
+
+    @Override
+    public LocalDateTime getTimeNow() {
+        return LocalDateTime.now();
+    }
+
+    @Override
+    public boolean checkTime(Task task) {
+        int numberOfIterations = 0;
+        if (task.getStartTime() == null || task.getEndTime() == null || allSortTasks.size() == 0) {
+            return true;
+        }
+        for (Task taskInMemory : allSortTasks) {
+            if(task.getEpicId() == taskInMemory.getId() || task.getId() == taskInMemory.getEpicId()) {
+                numberOfIterations++;
+                continue;
+            }
+            if (taskInMemory.getStartTime() == null || taskInMemory.getEndTime() == null) {
+                numberOfIterations++;
+                continue;
+            }
+            if ((task.getStartTime().isAfter(taskInMemory.getEndTime())
+                    || (task.getStartTime().isBefore(taskInMemory.getStartTime())))
+                    && (task.getEndTime().isBefore(taskInMemory.getStartTime())
+                    || task.getEndTime().isAfter(taskInMemory.getEndTime()))) {
+                numberOfIterations++;
+            }
+        }
+        return allSortTasks.size() == numberOfIterations;
     }
 }

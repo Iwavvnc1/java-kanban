@@ -1,16 +1,34 @@
 package DataTask;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class Epic extends Task {
 
-    private List<Integer> idSubTasks = new ArrayList<>();
+    private List<Task> subTasks = new ArrayList<>();
     private TypeTask type;
+    private LocalDateTime endTime;
 
     public Epic(int id, String title, String description) {
         super(id, title, description);
+        type = TypeTask.EPIC;
+    }
+
+    public Epic(int id, String title, String description, Status status) {
+        super(id, title, description, status);
+        type = TypeTask.EPIC;
+    }
+
+    public Epic(int id, String title, String description, LocalDateTime startTime, Duration duration) {
+        super(id, title, description,startTime,duration);
+        type = TypeTask.EPIC;
+    }
+
+    public Epic(int id, String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+        super(id, title, description, status,startTime,duration);
         type = TypeTask.EPIC;
     }
 
@@ -19,34 +37,77 @@ public class Epic extends Task {
         return type;
     }
 
-    public Epic(int id, String title, String description, Status status) {
-        super(id, title, description, status);
-        type = TypeTask.EPIC;
+    public List<Task> getIdSubTasks() {
+
+        return subTasks;
     }
 
-    public List<Integer> getIdSubTasks() {
+    public void addSubTasksOnEpic(Task task) {
 
-        return idSubTasks;
+        subTasks.add(task);
     }
 
-    public void addSubTasksOnEpic(int idSubtask) {
+    public void removeTasksOnEpic(Task task) {
 
-        idSubTasks.add(idSubtask);
-    }
-
-    public void removeTasksOnEpic(int idSubtask) {
-
-        Iterator<Integer> idIterator = idSubTasks.iterator();
+        Iterator<Task> idIterator = subTasks.iterator();
         while (idIterator.hasNext()) {
-            Integer nextId = idIterator.next();
-            if (nextId == idSubtask) {
+            Task nextTask = idIterator.next();
+            if (nextTask == task) {
                 idIterator.remove();
             }
         }
     }
+
+    @Override
+    public LocalDateTime getStartTime(){
+       LocalDateTime epicStarTime = null;
+        for (Task subTask : subTasks) {
+            if(epicStarTime == null) {
+                epicStarTime = subTask.getStartTime();
+            }
+            if (epicStarTime.isAfter(subTask.getStartTime())) {
+                epicStarTime = subTask.getStartTime();
+            }
+        }
+        return epicStarTime;
+    }
+    @Override
+    public Duration getDuration() {
+        Duration epicDuration = null;
+        for (Task subTask : subTasks) {
+            if(epicDuration == null) {
+                epicDuration = subTask.getDuration();
+                continue;
+            }
+            if(subTask.getDuration() == null) {
+                continue;
+            }
+            epicDuration = epicDuration.plus(subTask.getDuration());
+        }
+        return epicDuration;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        LocalDateTime endTimeEpic = null;
+        for (Task subTask : subTasks) {
+            if (endTimeEpic == null) {
+                endTimeEpic = subTask.getEndTime();
+            }
+            if(endTimeEpic.isBefore(subTask.getEndTime())) {
+                endTimeEpic = subTask.getEndTime();
+            }
+        }
+        return endTimeEpic;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public String toString() {
         return getId() + ",," + type + ",," + getTitle() + ",," + getStatus() + ",,"
-                + getDescription() + ",," + "\n";
+                + getDescription() + ",,";
     }
 }

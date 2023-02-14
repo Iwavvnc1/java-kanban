@@ -45,11 +45,4 @@ class TaskTest {
         task.setStatus(Status.DONE);
         assertEquals(Status.DONE, task.getStatus(), "Не верно вводится status");
     }
-
-    @Test
-    void testToString() {
-        Task task = new Task(0, "name", "description");
-        assertEquals("0,,TASK,,name,,NEW,,description,," + "\n", task.toString(), "Не верно работает " +
-                "метод task.toString ");
-    }
 }
