@@ -189,7 +189,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskSubEmpty() {
+    void TestMethodUpdateTaskSubEmpty() throws IOException {
+       manager.addTask(epic1);
         sub1.setStatus(Status.DONE);
         manager.updateTask(sub1);
         assertEquals(Status.DONE, manager.getSubTasks().get(sub1.getId()).getStatus(), "Sub не обновляется " +
@@ -325,7 +326,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskSubEmptyWithIncorrectId() {
+    void TestMethodUpdateTaskSubEmptyWithIncorrectId() throws IOException {
+        manager.addTask(epicMinus1);
         subMinus1.setStatus(Status.DONE);
         manager.updateTask(subMinus1);
         assertEquals(Status.DONE, manager.getSubTasks().get(subMinus1.getId()).getStatus(), "Sub не обновляется " +
@@ -749,8 +751,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void TestMethodGetAllSubTaskInEpicWithSub() throws IOException {
         manager.addTask(epic1);
         manager.addTask(sub1);
-        List<Integer> expectedIdSubTasks = new ArrayList<>();
-        expectedIdSubTasks.add(sub1.getId());
+        List<Task> expectedIdSubTasks = new ArrayList<>();
+        expectedIdSubTasks.add(sub1);
         assertEquals(expectedIdSubTasks, epic1.getIdSubTasks(), "Не верно заполняется subTaskInEpic");
     }
 
@@ -759,8 +761,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         manager.addTask(epic1);
         manager.addTask(sub1);
         manager.addTask(sub2);
-        List<Integer> expectedIdSubTasks = new ArrayList<>();
-        expectedIdSubTasks.add(sub1.getId());
+        List<Task> expectedIdSubTasks = new ArrayList<>();
+        expectedIdSubTasks.add(sub1);
         manager.deleteTask(sub2.getId());
         assertEquals(expectedIdSubTasks, epic1.getIdSubTasks(), "Не верно заполняется subTaskInEpic");
     }

@@ -121,7 +121,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return idHistory;
     }
 
-    private static FileBackedTasksManager loadFromFile(File file) {
+    public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager manager = new FileBackedTasksManager();
         try (FileReader reader = new FileReader(file);
              BufferedReader br = new BufferedReader(reader)) {
@@ -209,8 +209,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             taskManager.addTask(subTask3);
             Epic epic2 = new Epic(giveId(), "эпик2", "описание эпик2");
             taskManager.addTask(epic2);
-            SubTask subTask4 = new SubTask(giveId(), "саб3-1",
-                    "описание саб3-1", epic1.getId(),
+            SubTask subTask4 = new SubTask(giveId(), "саб4-1",
+                    "описание саб4-1", epic1.getId(),
                     LocalDateTime.of(2002,10,13,2,24), Duration.ofMinutes(5));
             taskManager.addTask(subTask4);
             taskManager.getAllTasks();

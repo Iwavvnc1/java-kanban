@@ -64,6 +64,7 @@ public class Epic extends Task {
         for (Task subTask : subTasks) {
             if(epicStarTime == null) {
                 epicStarTime = subTask.getStartTime();
+                continue;
             }
             if (epicStarTime.isAfter(subTask.getStartTime())) {
                 epicStarTime = subTask.getStartTime();
@@ -93,6 +94,7 @@ public class Epic extends Task {
         for (Task subTask : subTasks) {
             if (endTimeEpic == null) {
                 endTimeEpic = subTask.getEndTime();
+                continue;
             }
             if(endTimeEpic.isBefore(subTask.getEndTime())) {
                 endTimeEpic = subTask.getEndTime();

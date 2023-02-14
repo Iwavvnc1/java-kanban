@@ -91,6 +91,9 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         Epic epicTask = (Epic) allTasks.get(id);
+        if(epicTask.getIdSubTasks().size() == 0) {
+            return;
+        }
         for (Task subInEpic : epicTask.getIdSubTasks()) {
             switch (subInEpic.getStatus()) {
                 case IN_PROGRESS: {
@@ -153,22 +156,8 @@ public class InMemoryTaskManager implements TaskManager {
         if (allTasks.size() == 0) {
             return null;
         }
-        switch (allTasks.get(id).getType()) {
-            case TASK: {
-                historyManager.add(tasks.get(id));
-                return tasks.get(id);
-            }
-            case EPIC: {
-                historyManager.add(epicTasks.get(id));
-                return epicTasks.get(id);
-            }
-            case SUBTASK: {
-                historyManager.add(subTasks.get(id));
-                return subTasks.get(id);
-            }
-            default:
-                return null;
-        }
+        historyManager.add(allTasks.get(id));
+        return allTasks.get(id);
     }
 
     @Override
