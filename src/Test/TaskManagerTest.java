@@ -4,6 +4,7 @@ import DataTask.Epic;
 import DataTask.Status;
 import DataTask.SubTask;
 import DataTask.Task;
+import Manager.FileBackedTasksManager;
 import Manager.InMemoryTaskManager;
 import Manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +41,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @BeforeEach
     public void beforeEach() {
-        manager = (T) new InMemoryTaskManager();
+        manager = (T) new FileBackedTasksManager();
         task1 = new Task(InMemoryTaskManager.giveId(), "name", "description");
         task2 = new Task(InMemoryTaskManager.giveId(), "name", "description");
         epic1 = new Epic(InMemoryTaskManager.giveId(), "name", "description");
@@ -743,7 +744,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void TestMethodGetAllSubTaskInEpicWithoutSub() throws IOException {
         manager.addTask(epic1);
-        List<Integer> expectedIdSubTasks = new ArrayList<>();
+        List<Task> expectedIdSubTasks = new ArrayList<>();
         assertEquals(expectedIdSubTasks, epic1.getIdSubTasks(), "Не верно заполняется subTaskInEpic");
     }
 
@@ -769,7 +770,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void TestMethodGetAllSubTaskInEpicWithoutSubEmpty() {
-        List<Integer> expectedIdSubTasks = new ArrayList<>();
+        List<Task> expectedIdSubTasks = new ArrayList<>();
         assertEquals(expectedIdSubTasks, epic1.getIdSubTasks(), "Не верно заполняется " +
                 "subTaskInEpic при пустом списке задач");
     }

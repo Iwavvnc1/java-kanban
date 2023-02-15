@@ -126,7 +126,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (allTasks.size() == 0) {
             return;
         }
-        historyManager.remove(id);
         switch (allTasks.get(id).getType()) {
             case TASK: {
                 tasks.remove(id);
@@ -148,6 +147,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
         allSortTasks.remove(getTask(id));
+        historyManager.remove(id);
         allTasks.remove(id);
     }
 
@@ -197,6 +197,19 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public LocalDateTime getTimeNow() {
         return LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InMemoryTaskManager that = (InMemoryTaskManager) o;
+        return Objects.equals(allTasks, that.allTasks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(allTasks);
     }
 
     @Override

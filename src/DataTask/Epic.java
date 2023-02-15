@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Epic extends Task {
 
-    private List<Task> subTasks = new ArrayList<>();
+    private final List<Task> subTasks = new ArrayList<>();
     private TypeTask type;
     private LocalDateTime endTime;
 
@@ -49,13 +49,7 @@ public class Epic extends Task {
 
     public void removeTasksOnEpic(Task task) {
 
-        Iterator<Task> idIterator = subTasks.iterator();
-        while (idIterator.hasNext()) {
-            Task nextTask = idIterator.next();
-            if (nextTask == task) {
-                idIterator.remove();
-            }
-        }
+        subTasks.removeIf(nextTask -> nextTask == task);
     }
 
     @Override

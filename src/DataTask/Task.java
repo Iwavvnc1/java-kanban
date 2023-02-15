@@ -15,7 +15,7 @@ public class Task implements Comparable<Task> {
     private final TypeTask type;
     private Duration duration;
     private LocalDateTime startTime;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
 
 
     public Task(int id, String title, String description, Status status, LocalDateTime startTime, Duration duration) {

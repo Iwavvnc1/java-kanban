@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private final static File file = new File("resources", "Tasks_and_history.csv");
+    public static final File file = new File("resources", "Tasks_and_history.csv");
     private final String dir = "resources";
     private final String fileName = "Tasks_and_history.csv";
 
@@ -145,7 +145,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 if (task == null) continue;
                 manager.addTask(task);
             }
-            return null;
+            return manager;
         } catch (FileNotFoundException e) {
             throw new ThisFileNotFound("Запрашиваемый файл не найден");
         } catch (IOException e) {
@@ -185,6 +185,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return searchTask;
     }
 
+
     public static void main(String[] args) {
         try {
             TaskManager taskManager = new FileBackedTasksManager();
@@ -201,7 +202,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             taskManager.addTask(subTask1);
             SubTask subTask2 = new SubTask(giveId(), "саб2-1",
                     "описание саб2-1", epic1.getId(),
-                    LocalDateTime.of(2002,10,13,2,00), Duration.ofMinutes(11));
+                    LocalDateTime.of(2002,10,13,2,0), Duration.ofMinutes(11));
             taskManager.addTask(subTask2);
             SubTask subTask3 = new SubTask(giveId(), "саб3-1",
                     "описание саб3-1", epic1.getId(),
