@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
-    Epic epic;
-    SubTask sub1;
-    SubTask sub2;
+   private Epic epic;
+   private SubTask sub1;
+   private SubTask sub2;
     @BeforeEach
     public void beforeEach() {
         epic = new Epic(InMemoryTaskManager.giveId(), "name", "description");

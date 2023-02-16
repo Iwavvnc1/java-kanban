@@ -22,22 +22,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 abstract class TaskManagerTest<T extends TaskManager> {
 
     T manager;
-    Task task1;
-    Task task2;
-    Epic epic1;
-    Epic epic2;
-    SubTask sub1;
-    SubTask sub2;
-    SubTask sub3;
-    SubTask sub4;
-    Task taskMinus1;
-    Task taskMinus2;
-    Epic epicMinus1;
-    Epic epicMinus2;
-    SubTask subMinus1;
-    SubTask subMinus2;
-    SubTask subMinus3;
-    SubTask subMinus4;
+    protected Task task1;
+    protected Task task2;
+    protected Epic epic1;
+    protected Epic epic2;
+    protected SubTask sub1;
+    protected SubTask sub2;
+    protected SubTask sub3;
+    protected SubTask sub4;
+    protected Task taskMinus1;
+    protected Task taskMinus2;
+    protected Epic epicMinus1;
+    protected Epic epicMinus2;
+    protected SubTask subMinus1;
+    protected SubTask subMinus2;
+    protected SubTask subMinus3;
+    protected SubTask subMinus4;
 
     @BeforeEach
     public void beforeEach() {

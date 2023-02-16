@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
-    InMemoryTaskManager manager;
-    InMemoryHistoryManager historyManager;
-    Task task1;
-    Task task2;
-    Task task3;
+    private InMemoryTaskManager manager;
+    private InMemoryHistoryManager historyManager;
+    private Task task1;
+    private Task task2;
+    private Task task3;
 
     @BeforeEach
     public void beforeEach() {

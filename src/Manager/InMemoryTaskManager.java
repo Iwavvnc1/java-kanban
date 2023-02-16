@@ -31,7 +31,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void addTask(Task task) {
-        if (checkTime(task)) {
+        if (isHasIntersection(task)) {
             allTasks.put(task.getId(), task);
             allSortTasks.add(task);
             switch (task.getType()) {
@@ -60,7 +60,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateTask(Task task) {
-        if (checkTime(task)) {
+        if (isHasIntersection(task)) {
             allTasks.put(task.getId(), task);
             allSortTasks.remove(task);
             allSortTasks.add(task);
@@ -91,7 +91,7 @@ public class InMemoryTaskManager implements TaskManager {
             return;
         }
         Epic epicTask = (Epic) allTasks.get(id);
-        if(epicTask.getIdSubTasks().size() == 0) {
+        if (epicTask.getIdSubTasks().size() == 0) {
             return;
         }
         for (Task subInEpic : epicTask.getIdSubTasks()) {
@@ -213,13 +213,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean checkTime(Task task) {
+    public boolean isHasIntersection(Task task) {
         int numberOfIterations = 0;
         if (task.getStartTime() == null || task.getEndTime() == null || allSortTasks.size() == 0) {
             return true;
         }
         for (Task taskInMemory : allSortTasks) {
-            if(task.getEpicId() == taskInMemory.getId() || task.getId() == taskInMemory.getEpicId()) {
+            if (task.getEpicId() == taskInMemory.getId() || task.getId() == taskInMemory.getEpicId()) {
                 numberOfIterations++;
                 continue;
             }

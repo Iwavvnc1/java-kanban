@@ -32,9 +32,11 @@ public interface TaskManager {
 
     Map<Integer, Task> getEpicTasks();
 
-    public void updateStatusEpic(int id);
+    void updateStatusEpic(int id);
 
-    public TreeSet<Task> getPrioritizedTasks();
-    public LocalDateTime getTimeNow();
-    public boolean checkTime(Task task);
+    TreeSet<Task> getPrioritizedTasks();
+
+    LocalDateTime getTimeNow();
+
+    boolean isHasIntersection(Task task);
 }
