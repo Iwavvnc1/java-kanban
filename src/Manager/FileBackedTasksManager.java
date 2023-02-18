@@ -240,6 +240,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             Task task3 = new Task(giveId(), "таск 3", "описание 3");
             taskManager2.addTask(task3);
             for (Task prioritizedTask : taskManager.getPrioritizedTasks()) {
+                System.out.print(prioritizedTask.getTitle() + " - ");
                 System.out.println(prioritizedTask.getStartTime());
             }
            // System.out.println(taskManager2.getTasks());

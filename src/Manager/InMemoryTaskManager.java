@@ -33,10 +33,10 @@ public class InMemoryTaskManager implements TaskManager {
     public void addTask(Task task) {
         if (isHasIntersection(task)) {
             allTasks.put(task.getId(), task);
-            allSortTasks.add(task);
             switch (task.getType()) {
                 case TASK: {
                     tasks.put(task.getId(), task);
+                    allSortTasks.add(task);
                     break;
                 }
                 case EPIC: {
@@ -50,6 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
                     updateTask.addSubTasksOnEpic(task);
                     epicTasks.put(updateTask.getId(), updateTask);
                     allTasks.put(updateTask.getId(), updateTask);
+                    allSortTasks.add(task);
                     break;
                 }
             }
@@ -62,11 +63,11 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {
         if (isHasIntersection(task)) {
             allTasks.put(task.getId(), task);
-            allSortTasks.remove(task);
-            allSortTasks.add(task);
             switch (task.getType()) {
                 case TASK: {
                     tasks.put(task.getId(), task);
+                    allSortTasks.remove(task);
+                    allSortTasks.add(task);
                     break;
                 }
                 case EPIC: {
@@ -76,6 +77,8 @@ public class InMemoryTaskManager implements TaskManager {
                 case SUBTASK: {
                     updateStatusEpic(task.getEpicId());
                     subTasks.put(task.getId(), task);
+                    allSortTasks.remove(task);
+                    allSortTasks.add(task);
                     break;
                 }
             }
@@ -129,6 +132,7 @@ public class InMemoryTaskManager implements TaskManager {
         switch (allTasks.get(id).getType()) {
             case TASK: {
                 tasks.remove(id);
+                allSortTasks.remove(allTasks.get(id));
                 break;
             }
             case EPIC: {
@@ -143,10 +147,10 @@ public class InMemoryTaskManager implements TaskManager {
                 Epic epicTask = (Epic) epicTasks.get(subTasks.get(id).getEpicId());
                 epicTask.removeTasksOnEpic(allTasks.get(id));
                 subTasks.remove(id);
+                allSortTasks.remove(allTasks.get(id));
                 break;
             }
         }
-        allSortTasks.remove(getTask(id));
         historyManager.remove(id);
         allTasks.remove(id);
     }
