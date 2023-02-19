@@ -42,14 +42,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @BeforeEach
     public void beforeEach() {
         manager = (T) new FileBackedTasksManager();
-        task1 = new Task(InMemoryTaskManager.giveId(), "name", "description");
-        task2 = new Task(InMemoryTaskManager.giveId(), "name", "description");
-        epic1 = new Epic(InMemoryTaskManager.giveId(), "name", "description");
-        epic2 = new Epic(InMemoryTaskManager.giveId(), "name", "description");
-        sub1 = new SubTask(InMemoryTaskManager.giveId(), "name", "description", epic1.getId());
-        sub2 = new SubTask(InMemoryTaskManager.giveId(), "name", "description", epic1.getId());
-        sub3 = new SubTask(InMemoryTaskManager.giveId(), "name", "description", epic1.getId());
-        sub4 = new SubTask(InMemoryTaskManager.giveId(), "name", "description", epic1.getId());
+        task1 = new Task( "name", "description");
+        task2 = new Task( "name", "description");
+        epic1 = new Epic( "name", "description");
+        epic2 = new Epic( "name", "description");
+        sub1 = new SubTask( "name", "description", epic1.getId());
+        sub2 = new SubTask( "name", "description", epic1.getId());
+        sub3 = new SubTask( "name", "description", epic1.getId());
+        sub4 = new SubTask( "name", "description", epic1.getId());
         taskMinus1 = new Task(-1, "name", "description");
         taskMinus2 = new Task(-100, "name", "description");
         epicMinus1 = new Epic(-1000, "name", "description");
@@ -833,4 +833,3 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertEquals(epic1.getId(), sub1.getEpicId());
     }
 }
-

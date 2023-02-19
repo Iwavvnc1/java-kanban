@@ -16,9 +16,9 @@ class EpicTest {
    private SubTask sub2;
     @BeforeEach
     public void beforeEach() {
-        epic = new Epic(InMemoryTaskManager.giveId(), "name", "description");
-        sub1 = new SubTask(InMemoryTaskManager.giveId(), "name", "description", epic.getId());
-        sub2 = new SubTask(InMemoryTaskManager.giveId(), "name", "description", epic.getId());
+        epic = new Epic( "name", "description");
+        sub1 = new SubTask( "name", "description", epic.getId());
+        sub2 = new SubTask( "name", "description", epic.getId());
     }
     @Test
     void getType() {

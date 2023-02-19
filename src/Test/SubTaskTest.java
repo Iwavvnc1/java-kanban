@@ -12,7 +12,7 @@ class SubTaskTest {
     private SubTask sub;
     @BeforeEach
     public void beforeEach() {
-        sub = new SubTask(0, "name", "description", 1);
+        sub = new SubTask("name", "description", 1);
     }
 
     @Test

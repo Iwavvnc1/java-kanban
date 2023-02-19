@@ -12,21 +12,33 @@ public class Epic extends Task {
     private TypeTask type;
     private LocalDateTime endTime;
 
+    public Epic(String title, String description) {
+        super(title, description);
+        type = TypeTask.EPIC;
+    }
     public Epic(int id, String title, String description) {
-        super(id, title, description);
+        super(id,title, description);
         type = TypeTask.EPIC;
     }
 
+    public Epic(String title, String description, Status status) {
+        super(title, description, status);
+        type = TypeTask.EPIC;
+    }
     public Epic(int id, String title, String description, Status status) {
         super(id, title, description, status);
         type = TypeTask.EPIC;
     }
 
-    public Epic(int id, String title, String description, LocalDateTime startTime, Duration duration) {
-        super(id, title, description,startTime,duration);
+    public Epic(String title, String description, LocalDateTime startTime, Duration duration) {
+        super(title, description,startTime,duration);
         type = TypeTask.EPIC;
     }
 
+    public Epic(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+        super(title, description, status,startTime,duration);
+        type = TypeTask.EPIC;
+    }
     public Epic(int id, String title, String description, Status status, LocalDateTime startTime, Duration duration) {
         super(id, title, description, status,startTime,duration);
         type = TypeTask.EPIC;

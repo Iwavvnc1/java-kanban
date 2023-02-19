@@ -1,5 +1,7 @@
 package DataTask;
 
+import Manager.InMemoryTaskManager;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,7 +20,16 @@ public class Task implements Comparable<Task> {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm");
 
 
-    public Task(int id, String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+    public Task(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+        id = InMemoryTaskManager.giveId();
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.type = TypeTask.TASK;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+    public Task(int id,String title, String description, Status status, LocalDateTime startTime, Duration duration) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -28,14 +39,21 @@ public class Task implements Comparable<Task> {
         this.duration = duration;
     }
 
-    public Task(int id, String title, String description, LocalDateTime startTime, Duration duration) {
-        this.id = id;
+    public Task(String title, String description, LocalDateTime startTime, Duration duration) {
+        id = InMemoryTaskManager.giveId();
         this.title = title;
         this.description = description;
         status = Status.NEW;
         type = TypeTask.TASK;
         this.startTime = startTime;
         this.duration = duration;
+    }
+    public Task(String title, String description, Status status) {
+        id = InMemoryTaskManager.giveId();
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.type = TypeTask.TASK;
     }
     public Task(int id, String title, String description, Status status) {
         this.id = id;
@@ -45,6 +63,13 @@ public class Task implements Comparable<Task> {
         this.type = TypeTask.TASK;
     }
 
+    public Task(String title, String description) {
+        id = InMemoryTaskManager.giveId();
+        this.title = title;
+        this.description = description;
+        status = Status.NEW;
+        type = TypeTask.TASK;
+    }
     public Task(int id, String title, String description) {
         this.id = id;
         this.title = title;

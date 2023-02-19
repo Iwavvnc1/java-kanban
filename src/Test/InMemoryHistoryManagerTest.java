@@ -19,9 +19,9 @@ class InMemoryHistoryManagerTest {
     public void beforeEach() {
         manager = new InMemoryTaskManager();
         historyManager = new InMemoryHistoryManager();
-        task1 = new Task(InMemoryTaskManager.giveId(), "name", "description");
-        task2 = new Task(InMemoryTaskManager.giveId(), "name", "description");
-        task3 = new Task(InMemoryTaskManager.giveId(), "name", "description");
+        task1 = new Task("name", "description");
+        task2 = new Task("name", "description");
+        task3 = new Task("name", "description");
     }
 
     @Test

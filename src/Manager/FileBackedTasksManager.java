@@ -190,27 +190,27 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try {
             TaskManager taskManager = new FileBackedTasksManager();
 
-            Task task1 = new Task(giveId(), "таск 1", "описание 1");
+            Task task1 = new Task( "таск 1", "описание 1");
             taskManager.addTask(task1);
-            Task task2 = new Task(giveId(), "таск 2", "описание 2");
+            Task task2 = new Task( "таск 2", "описание 2");
             taskManager.addTask(task2);
-            Epic epic1 = new Epic(giveId(), "эпик1", "описание эпик1");
+            Epic epic1 = new Epic( "эпик1", "описание эпик1");
             taskManager.addTask(epic1);
-            SubTask subTask1 = new SubTask(giveId(), "саб1-1",
+            SubTask subTask1 = new SubTask( "саб1-1",
                     "описание саб1-1", epic1.getId(),
                     LocalDateTime.of(2002,10,13,2,12), Duration.ofMinutes(10));
             taskManager.addTask(subTask1);
-            SubTask subTask2 = new SubTask(giveId(), "саб2-1",
+            SubTask subTask2 = new SubTask( "саб2-1",
                     "описание саб2-1", epic1.getId(),
                     LocalDateTime.of(2002,10,13,2,0), Duration.ofMinutes(11));
             taskManager.addTask(subTask2);
-            SubTask subTask3 = new SubTask(giveId(), "саб3-1",
+            SubTask subTask3 = new SubTask( "саб3-1",
                     "описание саб3-1", epic1.getId(),
                     LocalDateTime.of(2002,10,13,2,30), Duration.ofMinutes(12));
             taskManager.addTask(subTask3);
-            Epic epic2 = new Epic(giveId(), "эпик2", "описание эпик2");
+            Epic epic2 = new Epic( "эпик2", "описание эпик2");
             taskManager.addTask(epic2);
-            SubTask subTask4 = new SubTask(giveId(), "саб4-1",
+            SubTask subTask4 = new SubTask( "саб4-1",
                     "описание саб4-1", epic1.getId(),
                     LocalDateTime.of(2002,10,13,2,24), Duration.ofMinutes(5));
             taskManager.addTask(subTask4);
@@ -220,6 +220,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             taskManager.getTask(subTask2.getId());
             taskManager.getTask(subTask3.getId());
             TaskManager taskManager2 = loadFromFile(file);
+            for (Integer s : taskManager.getAllTasks().keySet()) {
+                System.out.println(s+ " " + taskManager.getAllTasks().get(s));
+            }
             /*System.out.println("История 1 менеджера");
             System.out.println(taskManager.getHistory());
             System.out.println("История 2 менеджера");
@@ -237,7 +240,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             System.out.println("эпики 2 менеджера");
             System.out.println(taskManager2.getEpicTasks());*/
             //TaskManager taskManager2 = loadFromFile(file);
-            Task task3 = new Task(giveId(), "таск 3", "описание 3");
+            Task task3 = new Task( "таск 3", "описание 3");
             taskManager2.addTask(task3);
             for (Task prioritizedTask : taskManager.getPrioritizedTasks()) {
                 System.out.print(prioritizedTask.getTitle() + " - ");

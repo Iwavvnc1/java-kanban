@@ -1,6 +1,7 @@
 package Manager;
 
 import DataTask.*;
+import MyException.IdRepitException;
 import MyException.TimeException;
 
 import java.time.LocalDateTime;
@@ -32,30 +33,34 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addTask(Task task) {
         if (isHasIntersection(task)) {
-            allTasks.put(task.getId(), task);
-            switch (task.getType()) {
-                case TASK: {
-                    tasks.put(task.getId(), task);
-                    allSortTasks.add(task);
-                    break;
+            if(allTasks.containsKey(task.getId())) {
+                allTasks.put(task.getId(), task);
+                switch (task.getType()) {
+                    case TASK: {
+                        tasks.put(task.getId(), task);
+                        allSortTasks.add(task);
+                        break;
+                    }
+                    case EPIC: {
+                        epicId = id;
+                        epicTasks.put(task.getId(), task);
+                        break;
+                    }
+                    case SUBTASK: {
+                        subTasks.put(task.getId(), task);
+                        Epic updateTask = (Epic) epicTasks.get(task.getEpicId());
+                        updateTask.addSubTasksOnEpic(task);
+                        epicTasks.put(updateTask.getId(), updateTask);
+                        allTasks.put(updateTask.getId(), updateTask);
+                        allSortTasks.add(task);
+                        break;
+                    }
                 }
-                case EPIC: {
-                    epicId = id;
-                    epicTasks.put(task.getId(), task);
-                    break;
-                }
-                case SUBTASK: {
-                    subTasks.put(task.getId(), task);
-                    Epic updateTask = (Epic) epicTasks.get(task.getEpicId());
-                    updateTask.addSubTasksOnEpic(task);
-                    epicTasks.put(updateTask.getId(), updateTask);
-                    allTasks.put(updateTask.getId(), updateTask);
-                    allSortTasks.add(task);
-                    break;
-                }
+            } else {
+                throw new IdRepitException("Задача с таким ID уже существует.");
             }
         } else {
-            throw new TimeException("Задача пересекается с другой по времени");
+            throw new TimeException("Задача пересекается с другой по времени.");
         }
     }
 

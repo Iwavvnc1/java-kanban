@@ -11,11 +11,11 @@ class TaskTest {
     private Task task;
     @BeforeEach
     public void beforeEach() {
-        task = new Task(0, "name", "description");
+        task = new Task("name", "description");
     }
     @Test
     void getId() {
-        assertEquals(0, task.getId(), "Не верно выводится Id");
+        assertEquals(1, task.getId(), "Не верно выводится Id");
     }
 
     @Test
