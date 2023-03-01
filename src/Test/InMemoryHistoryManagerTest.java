@@ -6,6 +6,8 @@ import Manager.InMemoryTaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
@@ -25,7 +27,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void add() {
+    void add() throws IOException, InterruptedException {
         manager.addTask(task1);
         manager.getTask(task1.getId());
         historyManager.add(task1);
@@ -34,7 +36,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void addDouble() {
+    void addDouble() throws IOException, InterruptedException {
         manager.addTask(task1);
         manager.getTask(task1.getId());
         manager.getTask(task1.getId());
@@ -45,7 +47,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void getHistory() {
+    void getHistory() throws IOException, InterruptedException {
         manager.addTask(task1);
         manager.getTask(task1.getId());
         historyManager.add(task1);
@@ -54,7 +56,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void getHistoryDouble() {
+    void getHistoryDouble() throws IOException, InterruptedException {
         manager.addTask(task1);
         manager.addTask(task1);
         manager.getTask(task1.getId());
@@ -65,7 +67,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void removeBeginning() {
+    void removeBeginning() throws IOException, InterruptedException {
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
@@ -82,7 +84,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void removeMiddle() {
+    void removeMiddle() throws IOException, InterruptedException {
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
@@ -99,7 +101,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void removeEnd() {
+    void removeEnd() throws IOException, InterruptedException {
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);

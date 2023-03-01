@@ -41,7 +41,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @BeforeEach
     public void beforeEach() {
-        manager = (T) new FileBackedTasksManager();
+        manager = (T) new FileBackedTasksManager(FileBackedTasksManager.file);
         task1 = new Task( "name", "description");
         task2 = new Task( "name", "description");
         epic1 = new Epic( "name", "description");
@@ -61,7 +61,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodAddTaskEpic() throws IOException {
+    void TestMethodAddTaskEpic() throws IOException,  InterruptedException {
         manager.addTask(epic1);
         Task savedEpic = manager.getTask(epic1.getId());
         assertNotNull(savedEpic, "Epic не найден.");
@@ -73,7 +73,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodAddTaskEpicWithIncorrectId() throws IOException {
+    void TestMethodAddTaskEpicWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         Task savedEpic = manager.getTask(epicMinus1.getId());
         assertNotNull(savedEpic, "Epic не найден при неправильном Id.");
@@ -86,7 +86,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodAddTaskTask() throws IOException {
+    void TestMethodAddTaskTask() throws IOException, InterruptedException {
         manager.addTask(task1);
         Task savedTask = manager.getTask(task1.getId());
         assertNotNull(savedTask, "Task не найден.");
@@ -98,7 +98,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodAddTaskTaskWithIncorrectId() throws IOException {
+    void TestMethodAddTaskTaskWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(taskMinus1);
         Task savedTask = manager.getTask(taskMinus1.getId());
         assertNotNull(savedTask, "Task не найден при неправильном Id.");
@@ -111,7 +111,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodAddTaskSubWithIncorrectId() throws IOException {
+    void TestMethodAddTaskSubWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.addTask(subMinus1);
         Task savedSubMinus1 = manager.getTask(subMinus1.getId());
@@ -125,7 +125,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodAddTaskSub() throws IOException {
+    void TestMethodAddTaskSub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(sub1);
         Task savedSub1 = manager.getTask(sub1.getId());
@@ -138,7 +138,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskTask() throws IOException {
+    void TestMethodUpdateTaskTask() throws IOException, InterruptedException {
         manager.addTask(task1);
         task1.setStatus(Status.DONE);
         manager.updateTask(task1);
@@ -146,7 +146,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskTaskEmpty() {
+    void TestMethodUpdateTaskTaskEmpty() throws IOException, InterruptedException {
         task1.setStatus(Status.DONE);
         manager.updateTask(task1);
         assertEquals(Status.DONE, manager.getTasks().get(task1.getId()).getStatus(), "Task не обновляется " +
@@ -154,7 +154,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskSub() throws IOException {
+    void TestMethodUpdateTaskSub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(sub1);
         sub1.setStatus(Status.DONE);
@@ -163,7 +163,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskTaskWithIncorrectId() throws IOException {
+    void TestMethodUpdateTaskTaskWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(taskMinus1);
         taskMinus1.setStatus(Status.DONE);
         manager.updateTask(taskMinus1);
@@ -172,7 +172,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskTaskEmptyWithIncorrectId() {
+    void TestMethodUpdateTaskTaskEmptyWithIncorrectId() throws IOException, InterruptedException {
         taskMinus1.setStatus(Status.DONE);
         manager.updateTask(taskMinus1);
         assertEquals(Status.DONE, manager.getTasks().get(taskMinus1.getId()).getStatus(), "Task " +
@@ -180,7 +180,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskSubWithIncorrectId() throws IOException {
+    void TestMethodUpdateTaskSubWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.addTask(subMinus1);
         subMinus1.setStatus(Status.DONE);
@@ -190,7 +190,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskSubEmpty() throws IOException {
+    void TestMethodUpdateTaskSubEmpty() throws IOException, InterruptedException {
        manager.addTask(epic1);
         sub1.setStatus(Status.DONE);
         manager.updateTask(sub1);
@@ -199,7 +199,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskEpic() throws IOException {
+    void TestMethodUpdateTaskEpic() throws IOException, InterruptedException {
         manager.addTask(epic1);
         epic1.setStatus(Status.DONE);
         manager.updateTask(epic1);
@@ -207,7 +207,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskEpicEmpty() {
+    void TestMethodUpdateTaskEpicEmpty() throws IOException, InterruptedException {
         epic1.setStatus(Status.DONE);
         manager.updateTask(epic1);
         assertEquals(Status.DONE, manager.getEpicTasks().get(epic1.getId()).getStatus(), "Epic не " +
@@ -215,21 +215,21 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithoutSub() throws IOException {
+    void TestMethodUpdateStatusEpicWithoutSub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.updateStatusEpic(epic1.getId());
         assertEquals(Status.NEW, epic1.getStatus(), "неправильный расчет статуса без сабтасков");
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithoutSubEmpty() {
+    void TestMethodUpdateStatusEpicWithoutSubEmpty() throws IOException, InterruptedException {
         manager.updateStatusEpic(epic1.getId());
         assertEquals(Status.NEW, epic1.getStatus(), "неправильный расчет статуса без сабтасков " +
                 "при пустом списке задач");
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithNEWSub() throws IOException {
+    void TestMethodUpdateStatusEpicWithNEWSub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(sub1);
         manager.addTask(sub2);
@@ -240,14 +240,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithNEWSubEmpty() {
+    void TestMethodUpdateStatusEpicWithNEWSubEmpty() throws IOException, InterruptedException {
         manager.updateStatusEpic(epic1.getId());
         assertEquals(Status.NEW, epic1.getStatus(), "Нерпавильный расчет статуса при статусе сабтасков NEW " +
                 "при пустом списке задач");
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithDONESub() throws IOException {
+    void TestMethodUpdateStatusEpicWithDONESub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         sub1.setStatus(Status.DONE);
         sub2.setStatus(Status.DONE);
@@ -262,7 +262,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithDONESubEmpty() {
+    void TestMethodUpdateStatusEpicWithDONESubEmpty() throws IOException, InterruptedException {
         sub1.setStatus(Status.DONE);
         sub2.setStatus(Status.DONE);
         sub3.setStatus(Status.DONE);
@@ -273,7 +273,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithNEWAndDONESub() throws IOException {
+    void TestMethodUpdateStatusEpicWithNEWAndDONESub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         sub1.setStatus(Status.NEW);
         sub2.setStatus(Status.DONE);
@@ -289,7 +289,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithNEWAndDONESubEmpty() {
+    void TestMethodUpdateStatusEpicWithNEWAndDONESubEmpty() throws IOException, InterruptedException {
         sub1.setStatus(Status.NEW);
         sub2.setStatus(Status.DONE);
         sub3.setStatus(Status.NEW);
@@ -300,7 +300,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithIN_PROGRESSSub() throws IOException {
+    void TestMethodUpdateStatusEpicWithIN_PROGRESSSub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         sub1.setStatus(Status.IN_PROGRESS);
         sub2.setStatus(Status.IN_PROGRESS);
@@ -316,7 +316,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithIN_PROGRESSSubEmpty() {
+    void TestMethodUpdateStatusEpicWithIN_PROGRESSSubEmpty() throws IOException, InterruptedException {
         sub1.setStatus(Status.IN_PROGRESS);
         sub2.setStatus(Status.IN_PROGRESS);
         sub3.setStatus(Status.IN_PROGRESS);
@@ -327,7 +327,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskSubEmptyWithIncorrectId() throws IOException {
+    void TestMethodUpdateTaskSubEmptyWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         subMinus1.setStatus(Status.DONE);
         manager.updateTask(subMinus1);
@@ -336,7 +336,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskEpicWithIncorrectId() throws IOException {
+    void TestMethodUpdateTaskEpicWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         epicMinus1.setStatus(Status.DONE);
         manager.updateTask(epicMinus1);
@@ -345,7 +345,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateTaskEpicEmptyWithIncorrectId() {
+    void TestMethodUpdateTaskEpicEmptyWithIncorrectId() throws IOException, InterruptedException {
         epicMinus1.setStatus(Status.DONE);
         manager.updateTask(epicMinus1);
         assertEquals(Status.DONE, manager.getEpicTasks().get(epicMinus1.getId()).getStatus(), "Epic не " +
@@ -353,7 +353,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithoutSubWithIncorrectId() throws IOException {
+    void TestMethodUpdateStatusEpicWithoutSubWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.updateStatusEpic(epicMinus1.getId());
         assertEquals(Status.NEW, epicMinus1.getStatus(), "неправильный расчет статуса " +
@@ -361,14 +361,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithoutSubEmptyWithIncorrectId() {
+    void TestMethodUpdateStatusEpicWithoutSubEmptyWithIncorrectId() throws IOException, InterruptedException {
         manager.updateStatusEpic(epicMinus1.getId());
         assertEquals(Status.NEW, epicMinus1.getStatus(), "неправильный расчет статуса без сабтасков " +
                 "при пустом списке задач и при неправильном Id");
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithNEWSubWithIncorrectId() throws IOException {
+    void TestMethodUpdateStatusEpicWithNEWSubWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.addTask(subMinus1);
         manager.addTask(subMinus2);
@@ -380,14 +380,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithNEWSubEmptyWithIncorrectId() {
+    void TestMethodUpdateStatusEpicWithNEWSubEmptyWithIncorrectId() throws IOException, InterruptedException {
         manager.updateStatusEpic(epicMinus1.getId());
         assertEquals(Status.NEW, epicMinus1.getStatus(), "Нерпавильный расчет статуса " +
                 "при статусе сабтасков NEW, при пустом списке задач и при неправильном Id");
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithDONESubWithIncorrectId() throws IOException {
+    void TestMethodUpdateStatusEpicWithDONESubWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         subMinus1.setStatus(Status.DONE);
         subMinus2.setStatus(Status.DONE);
@@ -403,7 +403,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithDONESubEmptyWithIncorrectId() {
+    void TestMethodUpdateStatusEpicWithDONESubEmptyWithIncorrectId() throws IOException, InterruptedException {
         subMinus1.setStatus(Status.DONE);
         subMinus2.setStatus(Status.DONE);
         subMinus3.setStatus(Status.DONE);
@@ -414,7 +414,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithNEWAndDONESubWithIncorrectId() throws IOException {
+    void TestMethodUpdateStatusEpicWithNEWAndDONESubWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         subMinus1.setStatus(Status.NEW);
         subMinus2.setStatus(Status.DONE);
@@ -430,7 +430,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithNEWAndDONESubEmptyWithIncorrectId() {
+    void TestMethodUpdateStatusEpicWithNEWAndDONESubEmptyWithIncorrectId()  throws IOException, InterruptedException {
         subMinus1.setStatus(Status.NEW);
         subMinus2.setStatus(Status.DONE);
         subMinus3.setStatus(Status.NEW);
@@ -441,7 +441,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithIN_PROGRESSSubWithIncorrectId() throws IOException {
+    void TestMethodUpdateStatusEpicWithIN_PROGRESSSubWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         subMinus1.setStatus(Status.IN_PROGRESS);
         subMinus2.setStatus(Status.IN_PROGRESS);
@@ -457,7 +457,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodUpdateStatusEpicWithIN_PROGRESSSubEmptyWithIncorrectId() {
+    void TestMethodUpdateStatusEpicWithIN_PROGRESSSubEmptyWithIncorrectId() throws IOException, InterruptedException {
         subMinus1.setStatus(Status.IN_PROGRESS);
         subMinus2.setStatus(Status.IN_PROGRESS);
         subMinus3.setStatus(Status.IN_PROGRESS);
@@ -468,11 +468,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteAll() throws IOException {
+    void TestMethodDeleteAll() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(task1);
         manager.addTask(sub1);
-        manager.deleteAll();
+        manager.deleteAllEpics();
+        manager.deleteAllTasks();
+        manager.deleteAllSubTasks();
         assertEquals(0, manager.getAllTasks().size(), "AllTask не очищен.");
         assertEquals(0, manager.getTasks().size(), "tasks не очищен.");
         assertEquals(0, manager.getSubTasks().size(), "subTasks не очищен.");
@@ -480,8 +482,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteAllEmpty() {
-        manager.deleteAll();
+    void TestMethodDeleteAllEmpty() throws IOException, InterruptedException{
+        manager.deleteAllEpics();
+        manager.deleteAllTasks();
+        manager.deleteAllSubTasks();
         assertEquals(0, manager.getAllTasks().size(), "AllTask не очищен при пустом списке задач.");
         assertEquals(0, manager.getTasks().size(), "tasks не очищен при пустом списке задач.");
         assertEquals(0, manager.getSubTasks().size(), "subTasks не очищен при пустом списке задач.");
@@ -489,7 +493,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskEpic() throws IOException {
+    void TestMethodDeleteTaskEpic() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.deleteTask(epic1.getId());
         assertEquals(0, manager.getEpicTasks().size(), "Epic не удаляется из epicTasks");
@@ -497,7 +501,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskEpicEmpty() throws IOException {
+    void TestMethodDeleteTaskEpicEmpty() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.deleteTask(epic1.getId());
         assertEquals(0, manager.getEpicTasks().size(), "Epic не удаляется из epicTasks " +
@@ -507,7 +511,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskTask() throws IOException {
+    void TestMethodDeleteTaskTask() throws IOException, InterruptedException {
         manager.addTask(task1);
         manager.deleteTask(task1.getId());
         assertEquals(0, manager.getTasks().size(), "Task не удаляется из Tasks");
@@ -515,7 +519,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskTaskEmpty() {
+    void TestMethodDeleteTaskTaskEmpty() throws IOException, InterruptedException {
         manager.deleteTask(task1.getId());
         assertEquals(0, manager.getTasks().size(), "Task не удаляется из Tasks " +
                 "при пустом списке задач");
@@ -524,7 +528,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskSub() throws IOException {
+    void TestMethodDeleteTaskSub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(sub1);
         manager.deleteTask(sub1.getId());
@@ -533,7 +537,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskSubEmpty() {
+    void TestMethodDeleteTaskSubEmpty() throws IOException, InterruptedException {
         manager.deleteTask(sub1.getId());
         assertEquals(0, manager.getSubTasks().size(), "Sub не удаляется из subTasks " +
                 "при пустом списке задач");
@@ -542,11 +546,13 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteAllWithIncorrectId() throws IOException {
+    void TestMethodDeleteAllWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.addTask(taskMinus1);
         manager.addTask(subMinus1);
-        manager.deleteAll();
+        manager.deleteAllEpics();
+        manager.deleteAllTasks();
+        manager.deleteAllSubTasks();
         assertEquals(0, manager.getAllTasks().size(), "AllTask не очищен при неправильном Id.");
         assertEquals(0, manager.getTasks().size(), "tasks не очищен при неправильном Id.");
         assertEquals(0, manager.getSubTasks().size(), "subTasks не очищен при неправильном Id.");
@@ -554,7 +560,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskEpicWithIncorrectId() throws IOException {
+    void TestMethodDeleteTaskEpicWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.deleteTask(epicMinus1.getId());
         assertEquals(0, manager.getEpicTasks().size(), "Epic не удаляется из epicTasks" +
@@ -564,7 +570,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskEpicEmptyWithIncorrectId() throws IOException {
+    void TestMethodDeleteTaskEpicEmptyWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.deleteTask(epicMinus1.getId());
         assertEquals(0, manager.getEpicTasks().size(), "Epic не удаляется из epicTasks " +
@@ -574,7 +580,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskTaskWithIncorrectId() throws IOException {
+    void TestMethodDeleteTaskTaskWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(taskMinus1);
         manager.deleteTask(taskMinus1.getId());
         assertEquals(0, manager.getTasks().size(), "Task не удаляется из Tasks при неправильном Id");
@@ -583,7 +589,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskTaskEmptyWithIncorrectId() {
+    void TestMethodDeleteTaskTaskEmptyWithIncorrectId() throws IOException, InterruptedException {
         manager.deleteTask(taskMinus1.getId());
         assertEquals(0, manager.getTasks().size(), "Task не удаляется из Tasks " +
                 "при пустом списке задач и при неправильном Id");
@@ -592,7 +598,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskSubWithIncorrectId() throws IOException {
+    void TestMethodDeleteTaskSubWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.addTask(subMinus1);
         manager.deleteTask(subMinus1.getId());
@@ -603,7 +609,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodDeleteTaskSubEmptyWithIncorrectId() {
+    void TestMethodDeleteTaskSubEmptyWithIncorrectId() throws IOException, InterruptedException {
         manager.deleteTask(subMinus1.getId());
         assertEquals(0, manager.getSubTasks().size(), "Sub не удаляется из subTasks " +
                 "при пустом списке задач и при неправильном Id");
@@ -612,71 +618,71 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodGetTaskEpic() throws IOException {
+    void TestMethodGetTaskEpic() throws IOException, InterruptedException {
         manager.addTask(epic1);
         assertEquals(epic1, manager.getTask(epic1.getId()), "Не правильно работает метод getTask() с Epic");
     }
 
     @Test
-    void TestMethodGetTaskEpicEmpty() {
+    void TestMethodGetTaskEpicEmpty() throws IOException, InterruptedException {
         assertNull(manager.getTask(epic1.getId()), "Не правильно работает метод getTask() с Epic " +
                 "при пустом списке задач");
     }
 
     @Test
-    void TestMethodGetTaskTask() throws IOException {
+    void TestMethodGetTaskTask() throws IOException, InterruptedException {
         manager.addTask(task1);
         assertEquals(task1, manager.getTask(task1.getId()), "Не правильно работает метод getTask() с Task");
     }
 
     @Test
-    void TestMethodGetTaskTaskEmpty() {
+    void TestMethodGetTaskTaskEmpty() throws IOException, InterruptedException {
         assertNull(manager.getTask(task1.getId()), "Не правильно работает метод getTask() с Task " +
                 "при пустом списке задач");
     }
 
     @Test
-    void TestMethodGetTaskSub() throws IOException {
+    void TestMethodGetTaskSub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(sub1);
         assertEquals(sub1, manager.getTask(sub1.getId()), "Не правильно работает метод getTask() с Sub");
     }
 
     @Test
-    void TestMethodGetTaskSubEmpty() {
+    void TestMethodGetTaskSubEmpty() throws IOException, InterruptedException {
         assertNull(manager.getTask(sub1.getId()), "Не правильно работает метод getTask() с Sub " +
                 "при пустом списке задач");
     }
 
 
     @Test
-    void TestMethodGetTaskEpicWithIncorrectId() throws IOException {
+    void TestMethodGetTaskEpicWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         assertEquals(epicMinus1, manager.getTask(epicMinus1.getId()), "Не правильно работает " +
                 "метод getTask() с Epic при неправильном Id");
     }
 
     @Test
-    void TestMethodGetTaskEpicEmptyWithIncorrectId() {
+    void TestMethodGetTaskEpicEmptyWithIncorrectId() throws IOException, InterruptedException {
         assertNull(manager.getTask(epicMinus1.getId()), "Не правильно работает метод getTask() с Epic " +
                 "при пустом списке задач и при неправильном Id");
     }
 
     @Test
-    void TestMethodGetTaskTaskWithIncorrectId() throws IOException {
+    void TestMethodGetTaskTaskWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(taskMinus1);
         assertEquals(taskMinus1, manager.getTask(taskMinus1.getId()), "Не правильно работает " +
                 "метод getTask() с Task при неправильном Id");
     }
 
     @Test
-    void TestMethodGetTaskTaskEmptyWithIncorrectId() {
+    void TestMethodGetTaskTaskEmptyWithIncorrectId() throws IOException, InterruptedException {
         assertNull(manager.getTask(taskMinus1.getId()), "Не правильно работает метод getTask() с Task " +
                 "при пустом списке задач и при неправильном Id");
     }
 
     @Test
-    void TestMethodGetTaskSubWithIncorrectId() throws IOException {
+    void TestMethodGetTaskSubWithIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.addTask(subMinus1);
         assertEquals(subMinus1, manager.getTask(subMinus1.getId()), "Не правильно работает " +
@@ -684,14 +690,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodGetTaskSubEmptyWithIncorrectId() {
+    void TestMethodGetTaskSubEmptyWithIncorrectId() throws IOException, InterruptedException {
         assertNull(manager.getTask(subMinus1.getId()), "Не правильно работает метод getTask() с Sub " +
                 "при пустом списке задач и при неправильном Id");
     }
 
 
     @Test
-    void TestMethodGetHistory() throws IOException {
+    void TestMethodGetHistory() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(task1);
         manager.addTask(sub1);
@@ -703,7 +709,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodGetHistoryIncorrectId() throws IOException {
+    void TestMethodGetHistoryIncorrectId() throws IOException, InterruptedException {
         manager.addTask(epicMinus1);
         manager.addTask(taskMinus1);
         manager.addTask(subMinus1);
@@ -723,7 +729,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodGetAllTask() throws IOException {
+    void TestMethodGetAllTask() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(task1);
         manager.addTask(sub1);
@@ -742,14 +748,14 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodGetAllSubTaskInEpicWithoutSub() throws IOException {
+    void TestMethodGetAllSubTaskInEpicWithoutSub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         List<Task> expectedIdSubTasks = new ArrayList<>();
         assertEquals(expectedIdSubTasks, epic1.getIdSubTasks(), "Не верно заполняется subTaskInEpic");
     }
 
     @Test
-    void TestMethodGetAllSubTaskInEpicWithSub() throws IOException {
+    void TestMethodGetAllSubTaskInEpicWithSub() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(sub1);
         List<Task> expectedIdSubTasks = new ArrayList<>();
@@ -758,7 +764,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodGetAllSubTaskInEpicWithSubWithUpdate() throws IOException {
+    void TestMethodGetAllSubTaskInEpicWithSubWithUpdate() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(sub1);
         manager.addTask(sub2);
@@ -776,7 +782,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodGetTasks() throws IOException {
+    void TestMethodGetTasks() throws IOException, InterruptedException {
         manager.addTask(task1);
         manager.addTask(task2);
         Map<Integer, Task> expected = new HashMap<>();
@@ -792,7 +798,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodGetSubTasks() throws IOException {
+    void TestMethodGetSubTasks() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(sub1);
         manager.addTask(sub2);
@@ -810,7 +816,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestMethodGetEpicTasks() throws IOException {
+    void TestMethodGetEpicTasks() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(epic2);
         Map<Integer, Task> expected = new HashMap<>();
@@ -827,7 +833,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void TestSybWithIdEpic() throws IOException {
+    void TestSybWithIdEpic() throws IOException, InterruptedException {
         manager.addTask(epic1);
         manager.addTask(sub1);
         assertEquals(epic1.getId(), sub1.getEpicId());

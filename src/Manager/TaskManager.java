@@ -12,15 +12,19 @@ import java.util.TreeSet;
 public interface TaskManager {
     List<Task> getHistory();
 
-    void addTask(Task task) throws IOException;
+    int addTask(Task task) throws IOException, InterruptedException;
 
-    void updateTask(Task task);
+    boolean updateTask(Task task) throws IOException, InterruptedException;
 
-    void deleteAll();
+    boolean deleteAllTasks() throws IOException, InterruptedException;
 
-    void deleteTask(int id);
+    boolean deleteAllSubTasks() throws IOException, InterruptedException;
 
-    Task getTask(int id);
+    boolean deleteAllEpics() throws IOException, InterruptedException;
+
+    boolean deleteTask(int id) throws IOException, InterruptedException;
+
+    Task getTask(int id) throws IOException, InterruptedException;
 
     Map<Integer, Task> getAllTasks();
 
@@ -32,7 +36,7 @@ public interface TaskManager {
 
     Map<Integer, Task> getEpicTasks();
 
-    void updateStatusEpic(int id);
+    void updateStatusEpic(int id) throws IOException, InterruptedException;
 
     TreeSet<Task> getPrioritizedTasks();
 

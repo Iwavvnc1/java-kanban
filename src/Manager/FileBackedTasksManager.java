@@ -4,31 +4,29 @@ import DataTask.*;
 import MyException.ManagerSaveException;
 import MyException.ThisFileNotFound;
 import MyException.ThisNullPointer;
+import TypeAdapter.LocalDateTimeDeserializer;
+import TypeAdapter.LocalDateTimeSerializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    public static final File file = new File("resources", "Tasks_and_history.csv");
-    private final String dir = "resources";
-    private final String fileName = "Tasks_and_history.csv";
+    public static File newFile;
+    public static final File file = new File("resources"+ File.separator + "Tasks_and_history.csv");
 
-    private void save() {
+    public FileBackedTasksManager(File newFile) {
+        FileBackedTasksManager.newFile = newFile;
+    }
 
+
+    public void save() throws IOException, InterruptedException {
         try {
-            if (!Files.exists(Paths.get(dir))) {
-                Files.createDirectory(Paths.get(dir));
-            }
-            if (!Files.exists(Paths.get(dir, fileName))) {
-                Files.createFile(Paths.get(dir, fileName));
-            }
-            FileWriter writer = new FileWriter(dir + "/" + fileName);
-            FileReader reader = new FileReader(dir + "/" + fileName);
+            FileWriter writer = new FileWriter(newFile);
+            FileReader reader = new FileReader(newFile);
             BufferedReader br = new BufferedReader(reader);
             if (br.readLine() == null) {
                 writer.write("id,,type,,name,,status,,description,,starTime,,duration,,epic,," + "\n");
@@ -41,7 +39,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     writer.write("null,,");
                 }
                 if(task.getDuration() != null) {
-                    writer.write(Integer.parseInt(String.valueOf(task.getDuration().toSeconds())) + ",,");
+                    writer.write(task.getDuration() + ",,");
                 } else {
                     writer.write("null,,");
                 }
@@ -86,25 +84,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 case "TASK": {
                     return new Task(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4],
                             Status.valueOf(lineTask[3]), LocalDateTime.parse(lineTask[5],formatter),
-                            Duration.ofSeconds(Integer.parseInt(lineTask[6])));
+                            Integer.parseInt(lineTask[6]));
                 }
                 case "EPIC": {
                     return new Epic(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4],
                             Status.valueOf(lineTask[3]), LocalDateTime.parse(lineTask[5],formatter),
-                            Duration.ofSeconds(Integer.parseInt(lineTask[6])));
+                            Integer.parseInt(lineTask[6]));
                 }
                 case "SUBTASK": {
                     return new SubTask(Integer.parseInt(lineTask[0]), lineTask[2], lineTask[4],
                             Integer.parseInt(lineTask[7]), Status.valueOf(lineTask[3]),
                             LocalDateTime.parse(lineTask[5],formatter),
-                            Duration.ofSeconds(Integer.parseInt(lineTask[6])));
+                            Integer.parseInt(lineTask[6]));
                 }
             }
         }
         return null;
     }
 
-    private static String historyToString(HistoryManager manager) throws IOException {
+    protected static String historyToString(HistoryManager manager) throws IOException {
         StringBuilder historyManager = new StringBuilder();
         for (Task task : manager.getHistory()) {
             historyManager.append(task.getId()).append(",");
@@ -114,15 +112,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private static List<Integer> historyFromString(String value) {
         List<Integer> idHistory = new ArrayList<>();
-        String[] id = value.split(",");
-        for (String idInHistory : id) {
-            idHistory.add(Integer.parseInt(idInHistory));
+        if(!value.equals("")) {
+            String[] id = value.split(",");
+            for (String idInHistory : id) {
+                idHistory.add(Integer.parseInt(idInHistory));
+            }
+            return idHistory;
         }
         return idHistory;
     }
 
-    public static FileBackedTasksManager loadFromFile(File file) {
-        FileBackedTasksManager manager = new FileBackedTasksManager();
+    public static FileBackedTasksManager loadFromFile(File file) throws InterruptedException {
+        FileBackedTasksManager manager = new FileBackedTasksManager(file);
         try (FileReader reader = new FileReader(file);
              BufferedReader br = new BufferedReader(reader)) {
             boolean isHistory = false;
@@ -133,7 +134,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 }
                 if (isHistory) {
                     for (Integer id : historyFromString(newLine)) {
-                        manager.historyManager.add(manager.getTask(id));
+                        manager.getTask(id);
                     }
                     return manager;
                 }
@@ -154,41 +155,54 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addTask(Task task) {
+    public int addTask(Task task) throws IOException, InterruptedException {
         super.addTask(task);
         save();
+        return task.getId();
     }
 
     @Override
-    public void updateTask(Task task) {
-        super.updateTask(task);
+    public boolean updateTask(Task task) throws IOException, InterruptedException {
+        if (super.updateTask(task)) {
+            save();
+            return true;
+        }
         save();
+        return false;
     }
 
 
     @Override
-    public void deleteAll() {
-        super.deleteAll();
+    public boolean deleteAllTasks() throws IOException, InterruptedException {
+        if(super.deleteAllTasks()) {
+            save();
+            return true;
+        }
         save();
+        return false;
     }
 
     @Override
-    public void deleteTask(int id) {
-        super.deleteTask(id);
+    public boolean deleteTask(int id) throws IOException, InterruptedException {
+        if(super.deleteTask(id)) {
+            save();
+            return true;
+        }
         save();
+        return false;
     }
 
     @Override
-    public Task getTask(int id) {
+    public Task getTask(int id) throws IOException, InterruptedException {
         Task searchTask = super.getTask(id);
         save();
         return searchTask;
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         try {
-            TaskManager taskManager = new FileBackedTasksManager();
+            TaskManager taskManager = Managers.getDefaultFileBackedTasksManager(file);
 
             Task task1 = new Task( "таск 1", "описание 1");
             taskManager.addTask(task1);
@@ -198,21 +212,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             taskManager.addTask(epic1);
             SubTask subTask1 = new SubTask( "саб1-1",
                     "описание саб1-1", epic1.getId(),
-                    LocalDateTime.of(2002,10,13,2,12), Duration.ofMinutes(10));
+                    LocalDateTime.of(2002,10,13,2,12), 10);
             taskManager.addTask(subTask1);
             SubTask subTask2 = new SubTask( "саб2-1",
                     "описание саб2-1", epic1.getId(),
-                    LocalDateTime.of(2002,10,13,2,0), Duration.ofMinutes(11));
+                    LocalDateTime.of(2002,10,13,2,0), 11);
             taskManager.addTask(subTask2);
             SubTask subTask3 = new SubTask( "саб3-1",
                     "описание саб3-1", epic1.getId(),
-                    LocalDateTime.of(2002,10,13,2,30), Duration.ofMinutes(12));
+                    LocalDateTime.of(2002,10,13,2,30),12);
             taskManager.addTask(subTask3);
             Epic epic2 = new Epic( "эпик2", "описание эпик2");
             taskManager.addTask(epic2);
             SubTask subTask4 = new SubTask( "саб4-1",
                     "описание саб4-1", epic1.getId(),
-                    LocalDateTime.of(2002,10,13,2,24), Duration.ofMinutes(5));
+                    LocalDateTime.of(2002,10,13,2,24), 5);
             taskManager.addTask(subTask4);
             taskManager.getAllTasks();
             taskManager.getTask(epic1.getId());
@@ -223,7 +237,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             for (Integer s : taskManager.getAllTasks().keySet()) {
                 System.out.println(s+ " " + taskManager.getAllTasks().get(s));
             }
-            /*System.out.println("История 1 менеджера");
+            System.out.println("История 1 менеджера");
             System.out.println(taskManager.getHistory());
             System.out.println("История 2 менеджера");
             System.out.println(taskManager2.getHistory());
@@ -238,15 +252,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             System.out.println("эпики 1 менеджера");
             System.out.println(taskManager.getEpicTasks());
             System.out.println("эпики 2 менеджера");
-            System.out.println(taskManager2.getEpicTasks());*/
-            //TaskManager taskManager2 = loadFromFile(file);
+            System.out.println(taskManager2.getEpicTasks());
             Task task3 = new Task( "таск 3", "описание 3");
             taskManager2.addTask(task3);
             for (Task prioritizedTask : taskManager.getPrioritizedTasks()) {
                 System.out.print(prioritizedTask.getTitle() + " - ");
                 System.out.println(prioritizedTask.getStartTime());
             }
-           // System.out.println(taskManager2.getTasks());
+            final Gson gson = new GsonBuilder()
+                    .serializeNulls()
+                    .registerTypeAdapter(LocalDateTime.class,new LocalDateTimeSerializer())
+                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
+                    .create();
+            String s = gson.toJson(subTask4);
+            System.out.println(s);
+           SubTask sub = gson.fromJson(s, SubTask.class);
+            System.out.println(sub);
+            System.out.println(taskManager2.getTasks());
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка ввода/вывода");
         } catch (NullPointerException e) {
