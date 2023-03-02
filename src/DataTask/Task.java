@@ -19,8 +19,7 @@ public class Task implements Comparable<Task> {
     protected LocalDateTime endTime;
 
 
-
-    public Task(String title, String description, Status status, LocalDateTime startTime,  Integer duration) {
+    public Task(String title, String description, Status status, LocalDateTime startTime, Integer duration) {
         id = InMemoryTaskManager.giveId();
         this.title = title;
         this.description = description;
@@ -30,7 +29,8 @@ public class Task implements Comparable<Task> {
         this.duration = duration;
         this.endTime = getEndTime();
     }
-    public Task(int id,String title, String description, Status status, LocalDateTime startTime,  Integer duration) {
+
+    public Task(int id, String title, String description, Status status, LocalDateTime startTime, Integer duration) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -41,7 +41,7 @@ public class Task implements Comparable<Task> {
         this.endTime = getEndTime();
     }
 
-    public Task(String title, String description, LocalDateTime startTime,  Integer duration) {
+    public Task(String title, String description, LocalDateTime startTime, Integer duration) {
         id = InMemoryTaskManager.giveId();
         this.title = title;
         this.description = description;
@@ -51,6 +51,7 @@ public class Task implements Comparable<Task> {
         this.duration = duration;
         this.endTime = getEndTime();
     }
+
     public Task(String title, String description, Status status) {
         id = InMemoryTaskManager.giveId();
         this.title = title;
@@ -58,6 +59,7 @@ public class Task implements Comparable<Task> {
         this.status = status;
         this.type = TypeTask.TASK;
     }
+
     public Task(int id, String title, String description, Status status) {
         this.id = id;
         this.title = title;
@@ -73,6 +75,7 @@ public class Task implements Comparable<Task> {
         status = Status.NEW;
         type = TypeTask.TASK;
     }
+
     public Task(int id, String title, String description) {
         this.id = id;
         this.title = title;
@@ -80,7 +83,8 @@ public class Task implements Comparable<Task> {
         status = Status.NEW;
         type = TypeTask.TASK;
     }
-    public Task(String title, String description,TypeTask type, Status status, LocalDateTime startTime,  Integer duration) {
+
+    public Task(String title, String description, TypeTask type, Status status, LocalDateTime startTime, Integer duration) {
         id = InMemoryTaskManager.giveId();
         this.title = title;
         this.description = description;
@@ -89,7 +93,8 @@ public class Task implements Comparable<Task> {
         this.startTime = startTime;
         this.duration = duration;
     }
-    public Task(int id,String title, String description, TypeTask type,Status status, LocalDateTime startTime,  Integer duration) {
+
+    public Task(int id, String title, String description, TypeTask type, Status status, LocalDateTime startTime, Integer duration) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -100,7 +105,7 @@ public class Task implements Comparable<Task> {
         this.endTime = getEndTime();
     }
 
-    public Task(String title, String description, TypeTask type, LocalDateTime startTime,  Integer duration) {
+    public Task(String title, String description, TypeTask type, LocalDateTime startTime, Integer duration) {
         id = InMemoryTaskManager.giveId();
         this.title = title;
         this.description = description;
@@ -110,6 +115,7 @@ public class Task implements Comparable<Task> {
         this.duration = duration;
         this.endTime = getEndTime();
     }
+
     public Task(String title, String description, TypeTask type, Status status) {
         id = InMemoryTaskManager.giveId();
         this.title = title;
@@ -117,7 +123,8 @@ public class Task implements Comparable<Task> {
         this.status = status;
         this.type = type;
     }
-    public Task(int id, String title, String description, TypeTask type,Status status) {
+
+    public Task(int id, String title, String description, TypeTask type, Status status) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -132,6 +139,7 @@ public class Task implements Comparable<Task> {
         status = Status.NEW;
         this.type = type;
     }
+
     public Task(int id, String title, String description, TypeTask type) {
         this.id = id;
         this.title = title;
@@ -140,7 +148,33 @@ public class Task implements Comparable<Task> {
         this.type = type;
     }
 
-    public <T> Task(T fromJson) {
+    public Task(Task task) {
+        if (task.getId() == 0) {
+            id = InMemoryTaskManager.giveId();
+        } else {
+            this.id = task.getId();
+        }
+        this.title = task.getTitle();
+        this.description = task.getDescription();
+        if (task.getStatus() == null) {
+            status = Status.NEW;
+        } else {
+            this.status = task.getStatus();
+        }
+        this.type = task.getType();
+        if (task.getStartTime() != null) {
+            this.startTime = task.getStartTime();
+        }
+        if (task.getDuration() != 0) {
+            this.duration = task.getDuration();
+        }
+        if (task.getEndTime() != null) {
+            this.endTime = task.getEndTime();
+        }
+    }
+
+
+/*    public <T> Task(T fromJson) {
         if (fromJson.getClass().equals(Task.class)) {
             if(((Task) fromJson).getId() == 0) {
                 this.id = InMemoryTaskManager.giveId();
@@ -199,7 +233,7 @@ public class Task implements Comparable<Task> {
             }
             this.type = TypeTask.EPIC;
         }
-    }
+    }*/
 
 
     public int getId() {
@@ -227,6 +261,7 @@ public class Task implements Comparable<Task> {
 
         return status;
     }
+
     public int getEpicId() {
         return 0;
     }
@@ -249,7 +284,7 @@ public class Task implements Comparable<Task> {
     }
 
     public Integer getDuration() {
-                return duration;
+        return duration;
     }
 
     public LocalDateTime getStartTime() {
@@ -261,7 +296,7 @@ public class Task implements Comparable<Task> {
         return endTime;
     }
 
-    public void setDuration( Integer duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
@@ -284,7 +319,7 @@ public class Task implements Comparable<Task> {
         if (task.getStartTime() == null) {
             return -1;
         }
-        if(this.getStartTime() == null) {
+        if (this.getStartTime() == null) {
             return 1;
 
         }
@@ -296,11 +331,11 @@ public class Task implements Comparable<Task> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-        return id == task.id;
+        return id == task.id && Objects.equals(title, task.title) && Objects.equals(description, task.description) && status == task.status && type == task.type && Objects.equals(duration, task.duration) && Objects.equals(startTime, task.startTime) && Objects.equals(endTime, task.endTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, title, description, status, type, duration, startTime, endTime);
     }
 }

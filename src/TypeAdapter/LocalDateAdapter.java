@@ -6,26 +6,26 @@ import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy. HH:mm");
+public class LocalDateAdapter extends TypeAdapter<LocalDate> {
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
 
     @Override
-    public void write(JsonWriter out, LocalDateTime value) throws IOException {
+    public void write(JsonWriter out, LocalDate value) throws IOException {
         if(value == null) {
-            out.nullValue();
+            out.value("");
         } else {
             out.value(value.format(formatter));
         }
     }
 
     @Override
-    public LocalDateTime read(JsonReader in) throws IOException {
+    public LocalDate read(JsonReader in) throws IOException {
         final JsonToken peek = in.peek();
         if (peek != JsonToken.NULL) {
-            return LocalDateTime.parse(in.nextString(),formatter);
+            return LocalDate.parse(in.nextString(),formatter);
         }
         in.nextNull();
         return null;

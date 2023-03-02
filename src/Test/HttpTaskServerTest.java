@@ -7,8 +7,6 @@ import HttpTaskServer.HttpTaskServer;
 import KVServer.KVServer;
 import Manager.InMemoryTaskManager;
 import TypeAdapter.LocalDateTimeAdapter;
-import TypeAdapter.LocalDateTimeDeserializer;
-import TypeAdapter.LocalDateTimeSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -33,8 +32,6 @@ class HttpTaskServerTest {
             .build();
     protected final Gson gson = new GsonBuilder()
             .serializeNulls()
-          //  .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
-          //  .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
             .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
     Task task1 = new Task("task1", "task1Description",
@@ -58,11 +55,9 @@ class HttpTaskServerTest {
     URI urlGPT = URI.create("http://localhost:8080/tasks/");
     URI urlGSE = URI.create("http://localhost:8080/tasks/subtask/epic?id=" + epic1.getId());
 
-    HttpTaskServerTest() throws IOException, InterruptedException {
-    }
 
     @BeforeEach
-    public void beforeEach() throws IOException, InterruptedException {
+    public void beforeEach() throws InterruptedException, IOException, URISyntaxException {
         manager = new InMemoryTaskManager();
         kvserver = new KVServer();
         kvserver.start();
@@ -161,12 +156,10 @@ class HttpTaskServerTest {
         final HttpRequest.BodyPublisher bodyE = HttpRequest.BodyPublishers.ofString(jsonE);
         HttpRequest requestE = HttpRequest.newBuilder().uri(urlE).POST(bodyE).build();
         HttpResponse<String> responseE = client.send(requestE, HttpResponse.BodyHandlers.ofString());
-
         String json = gson.toJson(subtask1);
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest request1 = HttpRequest.newBuilder().uri(urlS).POST(body).build();
         HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
-
         HttpRequest request = HttpRequest.newBuilder().uri(urlGS).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         String subtask1s = gson.toJson(manager.getTask(subtask1.getId()));
@@ -311,7 +304,7 @@ class HttpTaskServerTest {
         HttpResponse<String> responseH = client.send(requestH, HttpResponse.BodyHandlers.ofString());
         manager.getTask(task1.getId());
         String history = gson.toJson(manager.getHistory());
-        assertEquals(history,responseH.body());
+        assertEquals(history, responseH.body());
         assertEquals(200, responseH.statusCode());
     }
 
@@ -338,36 +331,101 @@ class HttpTaskServerTest {
         final HttpRequest.BodyPublisher bodyE = HttpRequest.BodyPublishers.ofString(jsonE);
         HttpRequest requestE = HttpRequest.newBuilder().uri(urlE).POST(bodyE).build();
         HttpResponse<String> responseE = client.send(requestE, HttpResponse.BodyHandlers.ofString());
-
         String json = gson.toJson(subtask1);
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest request1 = HttpRequest.newBuilder().uri(urlS).POST(body).build();
         HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
-
         HttpRequest request = HttpRequest.newBuilder().uri(urlGS).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         assertEquals("Задача с идентификатором " + subtask1.getId()
                 + " удалена.", response.body());
         assertEquals(200, response.statusCode());
-        HttpRequest requestr = HttpRequest.newBuilder().uri(urlGS).GET().build();
+        HttpRequest requestr = HttpRequest.newBuilder().uri(urlS).GET().build();
         HttpResponse<String> responser = client.send(requestr, HttpResponse.BodyHandlers.ofString());
-        assertEquals("Список SubTask задач пуст.", responser.body());
+        assertEquals("Список Subtask задач пуст.", responser.body());
         assertEquals(404, responser.statusCode());
     }
 
     @Test
-    void DELETE_EPICID() {
+    void DELETE_EPICID() throws IOException, InterruptedException {
+        String json = gson.toJson(epic1);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request1 = HttpRequest.newBuilder().uri(urlE).POST(body).build();
+        HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
+        HttpRequest request = HttpRequest.newBuilder().uri(urlGE).DELETE().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals("Задача с идентификатором " + epic1.getId()
+                + " удалена.", response.body());
+        assertEquals(200, response.statusCode());
+        HttpRequest requestR = HttpRequest.newBuilder().uri(urlE).GET().build();
+        HttpResponse<String> responseR = client.send(requestR, HttpResponse.BodyHandlers.ofString());
+        assertEquals("Список Epic задач пуст.", responseR.body());
+        assertEquals(404, responseR.statusCode());
     }
 
     @Test
-    void DELETE_TASKS() {
+    void DELETE_TASKS() throws IOException, InterruptedException {
+        String json = gson.toJson(task1);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request1 = HttpRequest.newBuilder().uri(urlT).POST(body).build();
+        HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
+        String json1 = gson.toJson(task2);
+        final HttpRequest.BodyPublisher body1 = HttpRequest.BodyPublishers.ofString(json1);
+        HttpRequest request2 = HttpRequest.newBuilder().uri(urlT).POST(body1).build();
+        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        HttpRequest request = HttpRequest.newBuilder().uri(urlT).DELETE().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals("Все Task удалены.", response.body());
+        assertEquals(200, response.statusCode());
+        HttpRequest requestR = HttpRequest.newBuilder().uri(urlT).GET().build();
+        HttpResponse<String> responseR = client.send(requestR, HttpResponse.BodyHandlers.ofString());
+        assertEquals("Список Task задач пуст.", responseR.body());
+        assertEquals(404, responseR.statusCode());
     }
 
     @Test
-    void DELETE_SUBTASKS() {
+    void DELETE_SUBTASKS() throws IOException, InterruptedException {
+        String jsonE = gson.toJson(epic1);
+        final HttpRequest.BodyPublisher bodyE = HttpRequest.BodyPublishers.ofString(jsonE);
+        HttpRequest requestE = HttpRequest.newBuilder().uri(urlE).POST(bodyE).build();
+        HttpResponse<String> responseE = client.send(requestE, HttpResponse.BodyHandlers.ofString());
+        String json = gson.toJson(subtask1);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request1 = HttpRequest.newBuilder().uri(urlS).POST(body).build();
+        HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
+        String json1 = gson.toJson(subtask2);
+        final HttpRequest.BodyPublisher body1 = HttpRequest.BodyPublishers.ofString(json1);
+        HttpRequest request2 = HttpRequest.newBuilder().uri(urlS).POST(body1).build();
+        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        HttpRequest request = HttpRequest.newBuilder().uri(urlS).DELETE().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals("Все Sub удалены.", response.body());
+        assertEquals(200, response.statusCode());
+        HttpRequest requestr = HttpRequest.newBuilder().uri(urlS).GET().build();
+        HttpResponse<String> responser = client.send(requestr, HttpResponse.BodyHandlers.ofString());
+        assertEquals("Список Subtask задач пуст.", responser.body());
+        assertEquals(404, responser.statusCode());
     }
 
     @Test
-    void DELETE_EPICS() {
+    void DELETE_EPICS() throws IOException, InterruptedException {
+        manager.addTask(epic1);
+        manager.addTask(epic2);
+        String json = gson.toJson(epic1);
+        final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
+        HttpRequest request1 = HttpRequest.newBuilder().uri(urlE).POST(body).build();
+        HttpResponse<String> response1 = client.send(request1, HttpResponse.BodyHandlers.ofString());
+        String json1 = gson.toJson(epic2);
+        final HttpRequest.BodyPublisher body1 = HttpRequest.BodyPublishers.ofString(json1);
+        HttpRequest request2 = HttpRequest.newBuilder().uri(urlE).POST(body1).build();
+        HttpResponse<String> response2 = client.send(request2, HttpResponse.BodyHandlers.ofString());
+        HttpRequest request = HttpRequest.newBuilder().uri(urlE).DELETE().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals("Все Epic удалены.", response.body());
+        assertEquals(200, response.statusCode());
+        HttpRequest requestR = HttpRequest.newBuilder().uri(urlE).GET().build();
+        HttpResponse<String> responseR = client.send(requestR, HttpResponse.BodyHandlers.ofString());
+        assertEquals("Список Epic задач пуст.", responseR.body());
+        assertEquals(404, responseR.statusCode());
     }
 }

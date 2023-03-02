@@ -12,8 +12,6 @@ import MyException.IdRepitException;
 import MyException.NoCorrectEpicId;
 import MyException.SubWithoutEpicId;
 import MyException.TimeException;
-import TypeAdapter.LocalDateTimeSerializer;
-import TypeAdapter.LocalDateTimeDeserializer;
 import TypeAdapter.LocalDateTimeAdapter;
 
 import com.google.gson.*;
@@ -26,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -45,29 +44,27 @@ public class HttpTaskServer {
         System.out.println("Останавливаем сервер на порту " + PORT);
         server.stop(1);
     }
-    public HttpTaskServer() throws IOException, InterruptedException {
+
+    public HttpTaskServer() throws IOException, InterruptedException, URISyntaxException {
         server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
         server.createContext("/tasks", new PostsHandler());
     }
 
-    static class PostsHandler implements HttpHandler {
+    public static class PostsHandler implements HttpHandler {
 
         TaskManager taskManager = Managers.getDefault(new File("http://localhost:"
                 + KVServer.PORT + "/tasks"));
         private final Gson gson = new GsonBuilder()
                 .serializeNulls()
-               // .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
-              //  .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
 
-        PostsHandler() throws IOException, InterruptedException {
+        PostsHandler() throws IOException, InterruptedException, URISyntaxException {
         }
 
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             Endpoint endpoint = getEndpoint(exchange, exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-
             switch (endpoint) {
                 case GET_TASKS: {
                     handleGetTask(exchange);
@@ -285,7 +282,6 @@ public class HttpTaskServer {
         private void handlePostEpic(HttpExchange exchange) throws IOException, InterruptedException {
             try {
                 InputStream inputStream = exchange.getRequestBody();
-
                 String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
                 Epic epic = new Epic(gson.fromJson(body, Epic.class));
                 if (epic.getTitle() == null || (epic.getDescription() == null)) {
@@ -313,7 +309,6 @@ public class HttpTaskServer {
         private void handlePostSubtask(HttpExchange exchange) throws IOException, InterruptedException {
             try {
                 InputStream inputStream = exchange.getRequestBody();
-
                 String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
                 SubTask subTask = new SubTask(gson.fromJson(body, SubTask.class));
                 if (subTask.getTitle() == null || (subTask.getDescription() == null)) {
@@ -406,7 +401,6 @@ public class HttpTaskServer {
         private void handlePostTask(HttpExchange exchange) throws IOException, InterruptedException {
             try {
                 InputStream inputStream = exchange.getRequestBody();
-
                 String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
                 Task task = new Task(gson.fromJson(body, Task.class));
                 if (task.getTitle() == null || (task.getDescription() == null)) {
@@ -487,7 +481,6 @@ public class HttpTaskServer {
 
         private Endpoint getEndpoint(HttpExchange exchange, String requestPath, String requestMethod) {
             String[] pathParts = requestPath.split("/");
-
             if (pathParts.length == 2 && pathParts[1].equals("tasks")) {
                 return Endpoint.GET_SORTTASK;
             }
@@ -519,7 +512,6 @@ public class HttpTaskServer {
                     if (pathParts[2].equals("epic")) {
                         return Endpoint.DELETE_EPICID;
                     }
-
                 }
             }
             if (pathParts.length == 3 && pathParts[1].equals("tasks") &&
@@ -544,9 +536,14 @@ public class HttpTaskServer {
                     return Endpoint.GET_EPICS;
                 }
                 if (requestMethod.equals("DELETE")) {
-                    return Endpoint.DELETE_TASKS;
+                    if (pathParts[2].equals("task")) {
+                        return Endpoint.DELETE_TASKS;
+                    }
+                    if (pathParts[2].equals("subtask")) {
+                        return Endpoint.DELETE_SUBTASKS;
+                    }
+                    return Endpoint.DELETE_EPICS;
                 }
-
             }
             if (pathParts.length == 4 && pathParts[1].equals("tasks") &&
                     pathParts[2].equals("subtask") && pathParts[3].equals("epic")) {

@@ -37,8 +37,11 @@ public class Epic extends Task {
     public Epic(int id, String title, String description, Status status, LocalDateTime startTime,  Integer duration) {
         super(id, title, description, TypeTask.EPIC, status,startTime,duration);
     }
+    public Epic(Epic epic) {
+        super(epic);
+    }
 
-    public <T> Epic(T fromJson) {
+   /* public <T> Epic(T fromJson) {
         super(fromJson);
         if (getIdSubTasks().size() != 0) {
             if (((Epic) fromJson).startTime != null) {
@@ -51,7 +54,7 @@ public class Epic extends Task {
                 this.endTime = ((Epic) fromJson).getEndTime();
             }
         }
-    }
+    }*/
 
     public HashMap<Integer,Task> getIdSubTasks() {
 

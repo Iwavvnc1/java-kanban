@@ -50,12 +50,15 @@ public class SubTask extends Task {
         super(id, title, description, TypeTask.SUBTASK, status, startTime, duration);
         this.epicId = epicId;
     }
-
-    public <T> SubTask(T fromJson) {
+    public SubTask(SubTask sub) {
+        super(sub);
+        this.epicId = sub.getEpicId();
+    }
+    /*public <T> SubTask(T fromJson) {
         super(fromJson);
             this.endTime = ((SubTask) fromJson).getEndTime();
             this.epicId = ((SubTask) fromJson).epicId;
-        }
+        }*/
 
     @Override
     public String toString() {

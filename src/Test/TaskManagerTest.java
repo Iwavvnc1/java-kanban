@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected SubTask subMinus4;
 
     @BeforeEach
-    public void beforeEach() {
+    public void beforeEach() throws IOException, InterruptedException, URISyntaxException {
         manager = (T) new FileBackedTasksManager(FileBackedTasksManager.file);
         task1 = new Task( "name", "description");
         task2 = new Task( "name", "description");

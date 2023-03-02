@@ -3,9 +3,10 @@ package Manager;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 public class Managers {
-    public static TaskManager getDefault(File file) throws IOException, InterruptedException {
+    public static TaskManager getDefault(File file) throws IOException, InterruptedException, URISyntaxException {
         return new HttpTaskManager(file);
     }
 
