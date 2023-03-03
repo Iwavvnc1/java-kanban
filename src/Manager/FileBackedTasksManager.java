@@ -23,7 +23,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
 
-    public void save() throws IOException, InterruptedException {
+    public void save() {
         try {
             FileWriter writer = new FileWriter(newFile);
             FileReader reader = new FileReader(newFile);
@@ -102,7 +102,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return null;
     }
 
-    protected static String historyToString(HistoryManager manager) throws IOException {
+    protected static String historyToString(HistoryManager manager) {
         StringBuilder historyManager = new StringBuilder();
         for (Task task : manager.getHistory()) {
             historyManager.append(task.getId()).append(",");
@@ -122,7 +122,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return idHistory;
     }
 
-    public static FileBackedTasksManager loadFromFile(File file) throws InterruptedException {
+    public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager manager = new FileBackedTasksManager(file);
         try (FileReader reader = new FileReader(file);
              BufferedReader br = new BufferedReader(reader)) {
@@ -155,14 +155,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public int addTask(Task task) throws IOException, InterruptedException {
+    public int addTask(Task task) {
         super.addTask(task);
         save();
         return task.getId();
     }
 
     @Override
-    public boolean updateTask(Task task) throws IOException, InterruptedException {
+    public boolean updateTask(Task task) {
         if (super.updateTask(task)) {
             save();
             return true;
@@ -173,7 +173,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
 
     @Override
-    public boolean deleteAllTasks() throws IOException, InterruptedException {
+    public boolean deleteAllTasks() {
         if(super.deleteAllTasks()) {
             save();
             return true;
@@ -183,7 +183,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public boolean deleteTask(int id) throws IOException, InterruptedException {
+    public boolean deleteTask(int id) {
         if(super.deleteTask(id)) {
             save();
             return true;
@@ -193,14 +193,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task getTask(int id) throws IOException, InterruptedException {
+    public Task getTask(int id) {
         Task searchTask = super.getTask(id);
         save();
         return searchTask;
     }
 
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         try {
             TaskManager taskManager = Managers.getDefaultFileBackedTasksManager(file);
 
@@ -269,8 +269,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
            SubTask sub = gson.fromJson(s, SubTask.class);
             System.out.println(sub);
             System.out.println(taskManager2.getTasks());
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка ввода/вывода");
         } catch (NullPointerException e) {
             throw new ThisNullPointer("Ошибка проведения операции с null/0",e);
         }

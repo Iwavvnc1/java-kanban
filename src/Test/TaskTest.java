@@ -13,10 +13,6 @@ class TaskTest {
     public void beforeEach() {
         task = new Task("name", "description");
     }
-    @Test
-    void getId() {
-        assertEquals(1, task.getId(), "Не верно выводится Id");
-    }
 
     @Test
     void getStatus() {

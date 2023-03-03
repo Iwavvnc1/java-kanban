@@ -1,12 +1,16 @@
 package Manager;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
+
 
 public class Managers {
-    public static TaskManager getDefault(File file) throws IOException, InterruptedException, URISyntaxException {
+    public static String getLocalHostKvServer () {
+        return "http://localhost:8078/";
+    }
+    public static String getLocalHostHttpServer () {
+        return "http://localhost:8080/";
+    }
+    public static TaskManager getDefault(File file)  {
         return new HttpTaskManager(file);
     }
 

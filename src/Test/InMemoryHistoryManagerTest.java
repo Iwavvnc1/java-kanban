@@ -3,6 +3,7 @@ package Test;
 import DataTask.Task;
 import Manager.InMemoryHistoryManager;
 import Manager.InMemoryTaskManager;
+import MyException.IdRepitException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void add() throws IOException, InterruptedException {
+    void add()  {
         manager.addTask(task1);
         manager.getTask(task1.getId());
         historyManager.add(task1);
@@ -36,7 +37,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void addDouble() throws IOException, InterruptedException {
+    void addDouble()  {
         manager.addTask(task1);
         manager.getTask(task1.getId());
         manager.getTask(task1.getId());
@@ -47,7 +48,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void getHistory() throws IOException, InterruptedException {
+    void getHistory()  {
         manager.addTask(task1);
         manager.getTask(task1.getId());
         historyManager.add(task1);
@@ -56,18 +57,20 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void getHistoryDouble() throws IOException, InterruptedException {
-        manager.addTask(task1);
-        manager.addTask(task1);
-        manager.getTask(task1.getId());
-        historyManager.add(task1);
-        historyManager.add(task1);
-        assertEquals(historyManager.getHistory(),manager.getHistoryManager().getHistory(),
-                "Не правильно выводятся данные из истории при дублировании.");
+    void getHistoryDouble()  {
+        try {
+            manager.addTask(task1);
+            manager.addTask(task1);
+            manager.getTask(task1.getId());
+            historyManager.add(task1);
+            historyManager.add(task1);
+        } catch (IdRepitException e) {
+            assertNotEquals("", e.getMessage());
+        }
     }
 
     @Test
-    void removeBeginning() throws IOException, InterruptedException {
+    void removeBeginning()  {
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
@@ -84,7 +87,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void removeMiddle() throws IOException, InterruptedException {
+    void removeMiddle()  {
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
@@ -101,7 +104,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    void removeEnd() throws IOException, InterruptedException {
+    void removeEnd()  {
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);

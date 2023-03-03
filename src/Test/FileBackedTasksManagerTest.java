@@ -3,57 +3,55 @@ package Test;
 import Manager.FileBackedTasksManager;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>{
+class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager> {
 
     @Test
-    public void save() throws IOException, InterruptedException {
+    public void save() {
         manager.addTask(task1);
         FileBackedTasksManager newManager = FileBackedTasksManager.loadFromFile(FileBackedTasksManager.file);
-        assertEquals(manager,newManager,"Не правильно работает save(),менеджеры не совпадают.");
+        assertEquals(manager, newManager, "Не правильно работает save(),менеджеры не совпадают.");
     }
 
     @Test
-    public void saveEmpty() throws IOException, InterruptedException, InterruptedException {
+    public void saveEmpty() {
         manager.deleteAllTasks();
         FileBackedTasksManager newManager = FileBackedTasksManager.loadFromFile(FileBackedTasksManager.file);
-        assertEquals(manager.getAllTasks().size(),newManager.getAllTasks().size(),"Не правильно работает " +
+        assertEquals(manager.getAllTasks().size(), newManager.getAllTasks().size(), "Не правильно работает " +
                 "save()," +
                 "менеджеры не совпадают с пустым списком.");
     }
 
     @Test
-    public void saveWithEpicWithoutSub() throws IOException, InterruptedException, InterruptedException {
+    public void saveWithEpicWithoutSub() {
         manager.addTask(epic1);
         FileBackedTasksManager newManager = FileBackedTasksManager.loadFromFile(FileBackedTasksManager.file);
-        assertEquals(manager,newManager,"Не правильно работает save(), " +
+        assertEquals(manager, newManager, "Не правильно работает save(), " +
                 "менеджеры не совпадают при неправильном Id.");
     }
 
     @Test
-    public void loadFromFile() throws IOException, InterruptedException, InterruptedException {
+    public void loadFromFile() {
         manager.addTask(task1);
         FileBackedTasksManager newManager = FileBackedTasksManager.loadFromFile(FileBackedTasksManager.file);
-        assertEquals(manager,newManager,"Не правильно работает loadFromFile(),менеджеры не совпадают.");
+        assertEquals(manager, newManager, "Не правильно работает loadFromFile(),менеджеры не совпадают.");
     }
 
     @Test
-    public void loadFromFileEmpty() throws IOException, InterruptedException, InterruptedException {
+    public void loadFromFileEmpty() {
         manager.deleteAllTasks();
         FileBackedTasksManager newManager = FileBackedTasksManager.loadFromFile(FileBackedTasksManager.file);
-        assertEquals(manager,newManager,"Не правильно работает " +
+        assertEquals(manager, newManager, "Не правильно работает " +
                 "loadFromFile()," +
                 "менеджеры не совпадают с пустым списком.");
     }
 
     @Test
-    public void loadFromFileWithEpicWithoutSub() throws IOException, InterruptedException, InterruptedException {
+    public void loadFromFileWithEpicWithoutSub() {
         manager.addTask(epic1);
         FileBackedTasksManager newManager = FileBackedTasksManager.loadFromFile(FileBackedTasksManager.file);
-        assertEquals(manager,newManager,"Не правильно работает loadFromFile(), " +
+        assertEquals(manager, newManager, "Не правильно работает loadFromFile(), " +
                 "менеджеры не совпадают при неправильном Id.");
     }
 }

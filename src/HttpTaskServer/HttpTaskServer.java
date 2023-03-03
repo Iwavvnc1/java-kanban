@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -45,9 +44,14 @@ public class HttpTaskServer {
         server.stop(1);
     }
 
-    public HttpTaskServer() throws IOException, InterruptedException, URISyntaxException {
-        server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
-        server.createContext("/tasks", new PostsHandler());
+    public HttpTaskServer() {
+        try {
+            server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
+            server.createContext("/tasks", new PostsHandler());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public static class PostsHandler implements HttpHandler {
@@ -59,11 +63,9 @@ public class HttpTaskServer {
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
 
-        PostsHandler() throws IOException, InterruptedException, URISyntaxException {
-        }
 
         @Override
-        public void handle(HttpExchange exchange) throws IOException {
+        public void handle(HttpExchange exchange) {
             Endpoint endpoint = getEndpoint(exchange, exchange.getRequestURI().getPath(), exchange.getRequestMethod());
             switch (endpoint) {
                 case GET_TASKS: {
@@ -79,51 +81,27 @@ public class HttpTaskServer {
                     break;
                 }
                 case GET_TASK: {
-                    try {
-                        handleGetTaskOnId(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleGetTaskOnId(exchange);
                     break;
                 }
                 case GET_SUBTASK: {
-                    try {
-                        handleGetSubTaskOnId(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleGetSubTaskOnId(exchange);
                     break;
                 }
                 case GET_EPIC: {
-                    try {
-                        handleGetEpicOnId(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleGetEpicOnId(exchange);
                     break;
                 }
                 case POST_TASK: {
-                    try {
-                        handlePostTask(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handlePostTask(exchange);
                     break;
                 }
                 case POST_SUBTASK: {
-                    try {
-                        handlePostSubtask(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handlePostSubtask(exchange);
                     break;
                 }
                 case POST_EPIC: {
-                    try {
-                        handlePostEpic(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handlePostEpic(exchange);
                     break;
                 }
                 case GET_SORTTASK: {
@@ -139,51 +117,27 @@ public class HttpTaskServer {
                     break;
                 }
                 case DELETE_TASKID: {
-                    try {
-                        handleDeleteTaskOnId(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleDeleteTaskOnId(exchange);
                     break;
                 }
                 case DELETE_SUBTASKID: {
-                    try {
-                        handleDeleteSubTaskOnId(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleDeleteSubTaskOnId(exchange);
                     break;
                 }
                 case DELETE_EPICID: {
-                    try {
-                        handleDeleteEpicOnId(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleDeleteEpicOnId(exchange);
                     break;
                 }
                 case DELETE_TASKS: {
-                    try {
-                        handleDeleteAllTasks(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleDeleteAllTasks(exchange);
                     break;
                 }
                 case DELETE_EPICS: {
-                    try {
-                        handleDeleteAllEpics(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleDeleteAllEpics(exchange);
                     break;
                 }
                 case DELETE_SUBTASKS: {
-                    try {
-                        handleDeleteAllSubTasks(exchange);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    handleDeleteAllSubTasks(exchange);
                     break;
                 }
                 default:
@@ -191,7 +145,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleDeleteAllEpics(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handleDeleteAllEpics(HttpExchange exchange) {
             if (taskManager.deleteAllEpics()) {
                 writeResponse(exchange, "Все Epic удалены.", 200);
             } else {
@@ -199,7 +153,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleDeleteAllSubTasks(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handleDeleteAllSubTasks(HttpExchange exchange) {
             if (taskManager.deleteAllSubTasks()) {
                 writeResponse(exchange, "Все Sub удалены.", 200);
             } else {
@@ -207,7 +161,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleDeleteEpicOnId(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handleDeleteEpicOnId(HttpExchange exchange) {
             Optional<Integer> idOpt = getId(exchange);
             if (idOpt.isEmpty()) {
                 writeResponse(exchange, "Некорректный идентификатор задачи для удаления.", 400);
@@ -223,7 +177,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleDeleteSubTaskOnId(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handleDeleteSubTaskOnId(HttpExchange exchange) {
             Optional<Integer> idOpt = getId(exchange);
             if (idOpt.isEmpty()) {
                 writeResponse(exchange, "Некорректный идентификатор задачи для удаления.", 400);
@@ -239,7 +193,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetEpicOnId(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handleGetEpicOnId(HttpExchange exchange) {
             Optional<Integer> idOpt = getId(exchange);
             if (idOpt.isEmpty()) {
                 writeResponse(exchange, "Некорректный идентификатор задачи.", 400);
@@ -259,7 +213,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetSubTaskOnId(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handleGetSubTaskOnId(HttpExchange exchange) {
             Optional<Integer> idOpt = getId(exchange);
             if (idOpt.isEmpty()) {
                 writeResponse(exchange, "Некорректный идентификатор задачи.", 400);
@@ -279,7 +233,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handlePostEpic(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handlePostEpic(HttpExchange exchange) {
             try {
                 InputStream inputStream = exchange.getRequestBody();
                 String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
@@ -306,7 +260,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handlePostSubtask(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handlePostSubtask(HttpExchange exchange) {
             try {
                 InputStream inputStream = exchange.getRequestBody();
                 String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
@@ -337,7 +291,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleDeleteAllTasks(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handleDeleteAllTasks(HttpExchange exchange) {
             if (taskManager.deleteAllTasks()) {
                 writeResponse(exchange, "Все Task удалены.", 200);
             } else {
@@ -345,7 +299,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleDeleteTaskOnId(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handleDeleteTaskOnId(HttpExchange exchange) {
             Optional<Integer> idOpt = getId(exchange);
             if (idOpt.isEmpty()) {
                 writeResponse(exchange, "Некорректный идентификатор задачи для удаления.", 400);
@@ -361,7 +315,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetHistory(HttpExchange exchange) throws IOException {
+        private void handleGetHistory(HttpExchange exchange) {
             if (taskManager.getHistory().size() == 0) {
                 writeResponse(exchange, "История задач пуста.", 404);
             } else {
@@ -369,7 +323,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetEpicIdInSub(HttpExchange exchange) throws IOException {
+        private void handleGetEpicIdInSub(HttpExchange exchange) {
             Optional<Integer> idOpt = getId(exchange);
             if (idOpt.isEmpty()) {
                 writeResponse(exchange, "Некорректный идентификатор задачи.", 400);
@@ -390,7 +344,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetSortTasks(HttpExchange exchange) throws IOException {
+        private void handleGetSortTasks(HttpExchange exchange) {
             if (taskManager.getPrioritizedTasks().size() == 0) {
                 writeResponse(exchange, "Список отсортированных задач пуст.", 404);
             } else {
@@ -398,7 +352,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handlePostTask(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handlePostTask(HttpExchange exchange) {
             try {
                 InputStream inputStream = exchange.getRequestBody();
                 String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
@@ -425,7 +379,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetTaskOnId(HttpExchange exchange) throws IOException, InterruptedException {
+        private void handleGetTaskOnId(HttpExchange exchange) {
             Optional<Integer> idOpt = getId(exchange);
             if (idOpt.isEmpty()) {
                 writeResponse(exchange, "Некорректный идентификатор задачи.", 400);
@@ -445,7 +399,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetEpic(HttpExchange exchange) throws IOException {
+        private void handleGetEpic(HttpExchange exchange) {
             if (taskManager.getEpicTasks().size() == 0) {
                 writeResponse(exchange, "Список Epic задач пуст.", 404);
             } else {
@@ -453,7 +407,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetSubtask(HttpExchange exchange) throws IOException {
+        private void handleGetSubtask(HttpExchange exchange) {
             if (taskManager.getSubTasks().size() == 0) {
                 writeResponse(exchange, "Список Subtask задач пуст.", 404);
             } else {
@@ -461,7 +415,7 @@ public class HttpTaskServer {
             }
         }
 
-        private void handleGetTask(HttpExchange exchange) throws IOException {
+        private void handleGetTask(HttpExchange exchange) {
             if (taskManager.getTasks().size() == 0) {
                 writeResponse(exchange, "Список Task задач пуст.", 404);
             } else {
@@ -554,17 +508,21 @@ public class HttpTaskServer {
 
         private static void writeResponse(HttpExchange exchange,
                                           String responseString,
-                                          int responseCode) throws IOException {
-            if (responseString.isBlank()) {
-                exchange.sendResponseHeaders(responseCode, 0);
-            } else {
-                byte[] bytes = responseString.getBytes(DEFAULT_CHARSET);
-                exchange.sendResponseHeaders(responseCode, bytes.length);
-                try (OutputStream os = exchange.getResponseBody()) {
-                    os.write(bytes);
+                                          int responseCode) {
+            try {
+                if (responseString.isBlank()) {
+                    exchange.sendResponseHeaders(responseCode, 0);
+                } else {
+                    byte[] bytes = responseString.getBytes(DEFAULT_CHARSET);
+                    exchange.sendResponseHeaders(responseCode, bytes.length);
+                    try (OutputStream os = exchange.getResponseBody()) {
+                        os.write(bytes);
+                    }
                 }
+                exchange.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            exchange.close();
         }
 
 

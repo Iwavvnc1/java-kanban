@@ -28,13 +28,13 @@ class EpicTest {
     @Test
     void getIdSubTasks() {
         epic.addSubTasksOnEpic(sub2);
-        assertEquals(sub2, epic.getIdSubTasks().get(0), "Не верно выводится idSub из Epic");
+        assertEquals(sub2, epic.getIdSubTasks().get(sub2.getId()), "Не верно выводится idSub из Epic");
     }
 
     @Test
     void addSubTasksOnEpic() {
         epic.addSubTasksOnEpic(sub2);
-        assertEquals(sub2, epic.getIdSubTasks().get(0), "Не верно добавляется idSub в Epic");
+        assertEquals(sub2, epic.getIdSubTasks().get(sub2.getId()), "Не верно добавляется idSub в Epic");
     }
 
     @Test
@@ -42,6 +42,6 @@ class EpicTest {
         epic.addSubTasksOnEpic(sub1);
         epic.addSubTasksOnEpic(sub2);
         epic.removeTasksOnEpic(sub1);
-        assertEquals(sub2, epic.getIdSubTasks().get(0), "Не верно удаляется idSub в Epic");
+        assertEquals(sub2, epic.getIdSubTasks().get(sub2.getId()), "Не верно удаляется idSub в Epic");
     }
 }

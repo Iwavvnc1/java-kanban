@@ -165,7 +165,7 @@ public class Task implements Comparable<Task> {
         if (task.getStartTime() != null) {
             this.startTime = task.getStartTime();
         }
-        if (task.getDuration() != 0) {
+        if (task.getDuration() != null) {
             this.duration = task.getDuration();
         }
         if (task.getEndTime() != null) {
@@ -292,6 +292,9 @@ public class Task implements Comparable<Task> {
     }
 
     public LocalDateTime getEndTime() {
+        if(startTime == null) {
+            return null;
+        }
         endTime = startTime.plus(Duration.ofMinutes(getDuration()));
         return endTime;
     }

@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,31 +21,38 @@ public class HttpTaskManager extends FileBackedTasksManager {
     protected URL url;
     KVTaskClient kvClient;
 
-    private final Gson gson = new GsonBuilder()
-            .serializeNulls()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .create();
+    private final Gson gson = new GsonBuilder().serializeNulls().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).create();
 
-    public HttpTaskManager(File newFile) throws IOException, InterruptedException {
+    public HttpTaskManager(File newFile) {
         super(newFile);
-        this.url = newFile.toURI().toURL();
-        kvClient = new KVTaskClient(new URL("http://localhost:" + KVServer.PORT + "/register"));
+        try {
+            this.url = newFile.toURI().toURL();
+            kvClient = new KVTaskClient(new URL("http://localhost:" + KVServer.PORT + "/register"));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public HttpTaskManager(File newFile, String token) throws IOException {
+    public HttpTaskManager(File newFile, String token) {
         super(newFile);
-        this.url = newFile.toURI().toURL();
-        kvClient = new KVTaskClient(new URL("http://localhost:" + KVServer.PORT + "/register"), token);
+        try {
+            this.url = newFile.toURI().toURL();
+            kvClient = new KVTaskClient(new URL("http://localhost:" + KVServer.PORT + "/register"), token);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void save() throws IOException, InterruptedException {
+    public void save() {
         List<Task> taskList = new ArrayList<>(getAllTasks().values());
         kvClient.put("allTask", gson.toJson(taskList));
         kvClient.put("history", gson.toJson(getHistory()));
+
     }
 
-    public void loadFromServer() throws IOException, InterruptedException {
+    public void loadFromServer() {
         Type listType = new TypeToken<List<Task>>() {
         }.getType();
         JsonElement jsonElement = JsonParser.parseString(kvClient.load("allTask"));
@@ -87,6 +95,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
                 historyManager.add(task);
             }
         }
+
     }
 }
 

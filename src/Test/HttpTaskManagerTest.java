@@ -14,10 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HttpTaskManagerTest {
 
@@ -50,7 +49,7 @@ class HttpTaskManagerTest {
     }
 
     @Test
-    void save() throws IOException, InterruptedException {
+    void save() {
         manager.addTask(task1);
         manager.addTask(task2);
         manager.addTask(epic1);
@@ -74,7 +73,7 @@ class HttpTaskManagerTest {
     }
 
     @Test
-    void loadFromServer() throws IOException, InterruptedException {
+    void loadFromServer() {
         manager.addTask(task1);
         manager.addTask(task2);
         manager.addTask(epic1);

@@ -1,12 +1,8 @@
 package Manager;
 
 import DataTask.*;
-import MyException.IdRepitException;
-import MyException.NoCorrectEpicId;
-import MyException.SubWithoutEpicId;
-import MyException.TimeException;
+import MyException.*;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -34,7 +30,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public int addTask(Task task) throws IOException, InterruptedException {
+    public int addTask(Task task) {
         if (isHasIntersection(task)) {
                 switch (task.getType()) {
                     case TASK: {
@@ -96,39 +92,43 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean updateTask(Task task) throws IOException, InterruptedException {
-        if (isHasIntersection(task)) {
-            switch (task.getType()) {
-                case TASK: {
-                    tasks.put(task.getId(), task);
-                    allSortTasks.remove(allTasks.get(task.getId()));
-                    allSortTasks.add(task);
-                    allTasks.put(task.getId(), task);
-                    if(task.getStartTime() != null) {
-                        updateTime(task);
+    public boolean updateTask(Task task) {
+        try {
+            if (isHasIntersection(task)) {
+                switch (task.getType()) {
+                    case TASK: {
+                        tasks.put(task.getId(), task);
+                        allSortTasks.remove(allTasks.get(task.getId()));
+                        allSortTasks.add(task);
+                        allTasks.put(task.getId(), task);
+                        if (task.getStartTime() != null) {
+                            updateTime(task);
+                        }
+                        return true;
                     }
-                    return true;
+                    case EPIC: {
+                        epicTasks.put(task.getId(), task);
+                        allTasks.put(task.getId(), task);
+                        return true;
+                    }
+                    case SUBTASK: {
+                        subTasks.put(task.getId(), task);
+                        allSortTasks.remove(allTasks.get(task.getId()));
+                        allSortTasks.add(task);
+                        Epic updateEpic = (Epic) epicTasks.get(task.getEpicId());
+                        updateEpic.addSubTasksOnEpic(task);
+                        updateStatusEpic(task.getEpicId());
+                        updateTimeEpic(task);
+                        allTasks.put(task.getId(), task);
+                        return true;
+                    }
                 }
-                case EPIC: {
-                    epicTasks.put(task.getId(), task);
-                    allTasks.put(task.getId(), task);
-                    return true;
-                }
-                case SUBTASK: {
-                    subTasks.put(task.getId(), task);
-                    allSortTasks.remove(allTasks.get(task.getId()));
-                    allSortTasks.add(task);
-                    Epic updateEpic = (Epic) epicTasks.get(task.getEpicId());
-                    updateEpic.addSubTasksOnEpic(task);
-                    updateStatusEpic(task.getEpicId());
-                    updateTimeEpic(task);
-                    allTasks.put(task.getId(), task);
-                    return true;
-                }
+                return false;
+            } else {
+                throw new TimeException("Задача пересекается с другой по времени.");
             }
-            return false;
-        } else {
-            throw new TimeException("Задача пересекается с другой по времени.");
+        } catch (NullPointerException e) {
+            throw new ThisNullPointer("Задача не добавлена в менеджер.",e);
         }
     }
 
@@ -142,7 +142,7 @@ public class InMemoryTaskManager implements TaskManager {
         allTasks.get(task.getId()).getEndTime();
     }
 
-    public void updateStatusEpic(int id) throws IOException, InterruptedException {
+    public void updateStatusEpic(int id) {
         int countSubTaskDONE = 0;
         int countSubTaskNEW = 0;
         if (allTasks.size() == 0) {
@@ -179,9 +179,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean deleteAllTasks() throws IOException, InterruptedException {
+    public boolean deleteAllTasks() {
         for (Task task : tasks.values()) {
-            allTasks.remove(task);
+            allTasks.remove(task.getId());
             allSortTasks.remove(task);
         }
         tasks.clear();
@@ -189,9 +189,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean deleteAllSubTasks() throws IOException, InterruptedException {
+    public boolean deleteAllSubTasks() {
         for (Task sub : subTasks.values()) {
-            allTasks.remove(sub);
+            allTasks.remove(sub.getId());
             allSortTasks.remove(sub);
         }
         subTasks.clear();
@@ -199,9 +199,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean deleteAllEpics() throws IOException, InterruptedException {
+    public boolean deleteAllEpics() {
         for (Task epic : epicTasks.values()) {
-            allTasks.remove(epic);
+            allTasks.remove(epic.getId());
             allSortTasks.remove(epic);
         }
         epicTasks.clear();
@@ -209,7 +209,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean deleteTask(int id) throws IOException, InterruptedException {
+    public boolean deleteTask(int id) {
         if (allTasks.size() == 0) {
             return false;
         }
@@ -246,7 +246,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task getTask(int id) throws IOException, InterruptedException {
+    public Task getTask(int id)  {
         if (allTasks.size() == 0) {
             return null;
         }

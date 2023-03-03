@@ -57,7 +57,7 @@ class HttpTaskServerTest {
 
 
     @BeforeEach
-    public void beforeEach() throws InterruptedException, IOException, URISyntaxException {
+    public void beforeEach() throws IOException {
         manager = new InMemoryTaskManager();
         kvserver = new KVServer();
         kvserver.start();
