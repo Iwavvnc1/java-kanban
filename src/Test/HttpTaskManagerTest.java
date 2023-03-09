@@ -58,17 +58,17 @@ class HttpTaskManagerTest {
         manager.getTask(subtask1.getId());
         HttpTaskManager newManager = new HttpTaskManager(FileBackedTasksManager.file, "DEBUG");
         newManager.loadFromServer();
-        assertEquals(manager.getAllTasks().size(), newManager.getAllTasks().size(),
+        assertEquals(manager.getAllTasks(), newManager.getAllTasks(),
                 "Не правильно сохраняются все задачи.");
-        assertEquals(manager.getTasks().size(), newManager.getTasks().size(),
+        assertEquals(manager.getTasks(), newManager.getTasks(),
                 "Не правильно сохраняются Task.");
-        assertEquals(manager.getSubTasks().size(), newManager.getSubTasks().size(),
+        assertEquals(manager.getSubTasks(), newManager.getSubTasks(),
                 "Не правильно сохраняются subtask.");
-        assertEquals(manager.getEpicTasks().size(), newManager.getEpicTasks().size(),
+        assertEquals(manager.getEpicTasks(), newManager.getEpicTasks(),
                 "Не правильно сохраняются epic.");
-        assertEquals(manager.getPrioritizedTasks().size(), newManager.getPrioritizedTasks().size(),
+        assertEquals(manager.getPrioritizedTasks(), newManager.getPrioritizedTasks(),
                 "Не правильно сохраняются осортированные задачи.");
-        assertEquals(manager.getHistory().size(), newManager.getHistory().size(),
+        assertEquals(manager.getHistory(), newManager.getHistory(),
                 "Не правильно сохраняется история.");
     }
 
@@ -82,17 +82,17 @@ class HttpTaskManagerTest {
         manager.getTask(subtask1.getId());
         HttpTaskManager newManager = new HttpTaskManager(FileBackedTasksManager.file, "DEBUG");
         newManager.loadFromServer();
-        assertEquals(manager.getAllTasks().size(), newManager.getAllTasks().size(),
+        assertEquals(manager.getAllTasks(), newManager.getAllTasks(),
                 "Не правильно загружаются все задачи.");
-        assertEquals(manager.getTasks().size(), newManager.getTasks().size(),
+        assertEquals(manager.getTasks(), newManager.getTasks(),
                 "Не правильно загружаются Task.");
-        assertEquals(manager.getSubTasks().size(), newManager.getSubTasks().size(),
+        assertEquals(manager.getSubTasks(), newManager.getSubTasks(),
                 "Не правильно загружаются subtask.");
-        assertEquals(manager.getEpicTasks().size(), newManager.getEpicTasks().size(),
+        assertEquals(manager.getEpicTasks(), newManager.getEpicTasks(),
                 "Не правильно загружаются epic.");
-        assertEquals(manager.getPrioritizedTasks().size(), newManager.getPrioritizedTasks().size(),
+        assertEquals(manager.getPrioritizedTasks(), newManager.getPrioritizedTasks(),
                 "Не правильно загружаются осортированные задачи.");
-        assertEquals(manager.getHistory().size(), newManager.getHistory().size(),
+        assertEquals(manager.getHistory(), newManager.getHistory(),
                 "Не правильно загружается история.");
     }
 }

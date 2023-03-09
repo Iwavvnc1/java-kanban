@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Epic extends Task {
 
-    private transient final HashMap<Integer, Task> subTasks = new HashMap<>();
+    private transient HashMap<Integer, Task> subTasks = new HashMap<>();
 
     public Epic(String title, String description) {
         super(title, description, TypeTask.EPIC);
@@ -35,8 +35,8 @@ public class Epic extends Task {
         super(id, title, description, TypeTask.EPIC, status, startTime, duration);
     }
 
-    public Epic(Epic epic) {
-        super(epic);
+    public Epic(Epic epic, TypeTask type) {
+        super(epic, type);
     }
 
    /* public <T> Epic(T fromJson) {
@@ -60,6 +60,9 @@ public class Epic extends Task {
     }
 
     public void addSubTasksOnEpic(Task task) {
+        if (subTasks == null) {
+            subTasks = new HashMap<>();
+        }
         subTasks.put(task.getId(), task);
     }
 

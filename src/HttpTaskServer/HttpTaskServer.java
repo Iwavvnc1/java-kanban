@@ -8,10 +8,7 @@ import KVServer.KVServer;
 
 import Manager.Managers;
 import Manager.TaskManager;
-import MyException.IdRepitException;
-import MyException.NoCorrectEpicId;
-import MyException.SubWithoutEpicId;
-import MyException.TimeException;
+import MyException.*;
 import TypeAdapter.LocalDateTimeAdapter;
 
 import com.google.gson.*;
@@ -27,6 +24,7 @@ import java.net.InetSocketAddress;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static DataTask.TypeTask.*;
 import static jdk.internal.util.xml.XMLStreamWriter.DEFAULT_CHARSET;
 
 public class HttpTaskServer {
@@ -237,7 +235,7 @@ public class HttpTaskServer {
             try {
                 InputStream inputStream = exchange.getRequestBody();
                 String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
-                Epic epic = new Epic(gson.fromJson(body, Epic.class));
+                Epic epic = new Epic(gson.fromJson(body, Epic.class),EPIC);
                 if (epic.getTitle() == null || (epic.getDescription() == null)) {
                     writeResponse(exchange, "Поля Epic не могут быть пустыми", 400);
                 }
@@ -257,6 +255,9 @@ public class HttpTaskServer {
                 writeResponse(exchange, "Задача с таким id уже существует.", 400);
             } catch (TimeException e) {
                 writeResponse(exchange, "Задача пересекается с другой по времени.", 400);
+            } catch (ThisNullPointer e) {
+                writeResponse(exchange, "Такая задача не доступна для " +
+                        "обновления так как еще не добавлена.", 400);
             }
         }
 
@@ -264,7 +265,7 @@ public class HttpTaskServer {
             try {
                 InputStream inputStream = exchange.getRequestBody();
                 String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
-                SubTask subTask = new SubTask(gson.fromJson(body, SubTask.class));
+                SubTask subTask = new SubTask(gson.fromJson(body, SubTask.class),SUBTASK);
                 if (subTask.getTitle() == null || (subTask.getDescription() == null)) {
                     writeResponse(exchange, "Поля SubTask не могут быть пустыми", 400);
                 }
@@ -288,6 +289,9 @@ public class HttpTaskServer {
                 writeResponse(exchange, "Sub без Epic.", 400);
             } catch (NoCorrectEpicId e) {
                 writeResponse(exchange, "Задача с таким Id не является Epic, либо отсутствует.", 400);
+            } catch (ThisNullPointer e) {
+                writeResponse(exchange, "Такая задача не доступна для " +
+                        "обновления так как еще не добавлена.", 400);
             }
         }
 
@@ -356,7 +360,7 @@ public class HttpTaskServer {
             try {
                 InputStream inputStream = exchange.getRequestBody();
                 String body = new String(inputStream.readAllBytes(), DEFAULT_CHARSET);
-                Task task = new Task(gson.fromJson(body, Task.class));
+                Task task = new Task(gson.fromJson(body, Task.class),TASK);
                 if (task.getTitle() == null || (task.getDescription() == null)) {
                     writeResponse(exchange, "Поля Task не могут быть пустыми", 400);
                 }
@@ -376,6 +380,9 @@ public class HttpTaskServer {
                 writeResponse(exchange, "Задача с таким id уже существует.", 400);
             } catch (TimeException e) {
                 writeResponse(exchange, "Задача пересекается с другой по времени.", 400);
+            } catch (ThisNullPointer e) {
+                writeResponse(exchange, "Такая задача не доступна для " +
+                        "обновления так как еще не добавлена.", 400);
             }
         }
 

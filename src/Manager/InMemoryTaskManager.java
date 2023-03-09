@@ -132,7 +132,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void updateTimeEpic(Task task) {
+    protected void updateTimeEpic(Task task) {
         allTasks.get(task.getEpicId()).getStartTime();
         allTasks.get(task.getEpicId()).getDuration();
         allTasks.get(task.getEpicId()).getEndTime();

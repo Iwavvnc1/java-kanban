@@ -148,7 +148,7 @@ public class Task implements Comparable<Task> {
         this.type = type;
     }
 
-    public Task(Task task) {
+    public Task(Task task, TypeTask type) {
         if (task.getId() == 0) {
             id = InMemoryTaskManager.giveId();
         } else {
@@ -161,7 +161,11 @@ public class Task implements Comparable<Task> {
         } else {
             this.status = task.getStatus();
         }
-        this.type = task.getType();
+        if(task.getType() == null) {
+            this.type = type;
+        } else {
+            this.type = task.getType();
+        }
         if (task.getStartTime() != null) {
             this.startTime = task.getStartTime();
         }
